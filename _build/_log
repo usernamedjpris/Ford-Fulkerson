@@ -1,0 +1,24 @@
+### Starting build.
+# Target: ftest.ml.depends, tags: { extension:ml, file:ftest.ml, ocaml, ocamldep, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamldep.opt -modules ftest.ml > ftest.ml.depends
+# Target: gfile.mli.depends, tags: { extension:mli, file:gfile.mli, ocaml, ocamldep, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamldep.opt -modules gfile.mli > gfile.mli.depends
+# Target: graph.mli.depends, tags: { extension:mli, file:graph.mli, ocaml, ocamldep, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamldep.opt -modules graph.mli > graph.mli.depends
+# Target: graph.cmi, tags: { byte, compile, extension:mli, file:graph.mli, interf, ocaml, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamlc.opt -c -o graph.cmi graph.mli
+# Target: gfile.cmi, tags: { byte, compile, extension:mli, file:gfile.mli, interf, ocaml, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamlc.opt -c -o gfile.cmi gfile.mli
+# Target: ftest.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ftest.cmo, file:ftest.ml, implem, ocaml, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamlc.opt -c -o ftest.cmo ftest.ml
+# Target: gfile.ml.depends, tags: { extension:ml, file:gfile.ml, ocaml, ocamldep, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamldep.opt -modules gfile.ml > gfile.ml.depends
+# Target: gfile.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:gfile.cmo, file:gfile.ml, implem, ocaml, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamlc.opt -c -o gfile.cmo gfile.ml
+# Target: graph.ml.depends, tags: { extension:ml, file:graph.ml, ocaml, ocamldep, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamldep.opt -modules graph.ml > graph.ml.depends
+# Target: graph.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:graph.cmo, file:graph.ml, implem, ocaml, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamlc.opt -c -o graph.cmo graph.ml
+# Target: ftest.byte, tags: { byte, dont_link_with, extension:byte, file:ftest.byte, link, ocaml, program, quiet }
+/home/commetud/GEI/OCaml/.opam/4.08.1/bin/ocamlc.opt graph.cmo gfile.cmo ftest.cmo -o ftest.byte
+# Compilation successful.
