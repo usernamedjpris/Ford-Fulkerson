@@ -1,5 +1,5 @@
 open Gfile
-    
+open Tools
 let () =
 
   (* Check the number of command-line arguments *)
@@ -11,20 +11,23 @@ let () =
 
 
   (* Arguments are : infile(1) source-id(2) sink-id(3) outfile(4) *)
-  
+
   let infile = Sys.argv.(1)
   and outfile = Sys.argv.(4)
-  
+
   (* These command-line arguments are not used for the moment. *)
-  and _source = int_of_string Sys.argv.(2)
-  and _sink = int_of_string Sys.argv.(3)
+  (* and _source = int_of_string Sys.argv.(2)
+     and _sink = int_of_string Sys.argv.(3)*)
   in
 
   (* Open file *)
   let graph = from_file infile in
 
+  (*ajout et insertion test *)
+  let res = add_arcs (add_arcs (gmap graph int_of_string) 1 2 1000) 0 3 999 in
+  (* let res=clone_nodes graph in *)
+
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile graph in
+  let () = write_file outfile (gmap res string_of_int) in
 
   ()
-

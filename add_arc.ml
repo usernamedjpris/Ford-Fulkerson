@@ -55,4 +55,4 @@ let add_arcs g id1 id2 lab =
     |None-> new_arc g id1 id2 (lab)
     |Some x->new_arc g id1 id2 (lab+x)
 
-let gmap g f = e_fold g f empty_graph;;
+let gmap g f = e_fold g (fun acc id1 id2 lab-> copy_node acc::(f (id1 id2 lab)) empty_graph;;
