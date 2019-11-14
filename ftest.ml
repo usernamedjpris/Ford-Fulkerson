@@ -24,10 +24,16 @@ let () =
   let graph = from_file infile in
 
   (*ajout et insertion test *)
-  let res = add_arcs (add_arcs (gmap graph int_of_string) 1 2 1000) 0 3 999 in
+  (* let res = add_arcs (add_arcs (gmap graph int_of_string) 1 2 1000) 0 3 999 in *)
   (* let res=clone_nodes graph in *)
 
   (* Rewrite the graph that has been read. *)
   (*let () = write_file outfile (gmap res string_of_int) in*)
-  let () = export outfile (gmap res string_of_int) in
+  
+  
+  let path=find_path (gmap graph label_of_string) 0 5 empty_graph in
+  let () = export outfile (gmap path string_of_label) in
   ()
+  (* let () = export outfile (gmap res string_of_int) in
+  ()
+  *)
