@@ -28,6 +28,6 @@ let () =
   (* let res=clone_nodes graph in *)
 
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile (gmap res string_of_int) in
-
+  (*let () = write_file outfile (gmap res string_of_int) in*)
+  let () = export outfile (gmap res string_of_int) in
   ()

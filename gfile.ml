@@ -1,6 +1,6 @@
 open Graph
 open Printf
-    
+
 type path = string
 
 (* Format of text files:
@@ -16,7 +16,7 @@ type path = string
    e 3 1 11
    e 0 2 8
 
- *)
+*)
 
 let write_file path graph =
 
@@ -32,9 +32,9 @@ let write_file path graph =
 
   (* Write all arcs *)
   e_iter graph (fun id1 id2 lbl -> fprintf ff "e %d %d %s\n" id1 id2 lbl) ;
-  
+
   fprintf ff "\n%% End of graph\n" ;
-  
+
   close_out ff ;
   ()
 
@@ -90,7 +90,24 @@ let from_file path =
   in
 
   let final_graph = loop 0 empty_graph in
-  
+
   close_in infile ;
   final_graph
-  
+
+
+let export path graph =
+  (* Open a write-file. *)
+  let ff = open_out path in
+
+  (* Write in this file. *)
+  fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
+
+  (* double circle src *)
+  fprintf ff "node [shape = doublecircle]; LR_%d;\n" 0;
+  (* double circle src *)
+  fprintf ff "node [shape = circle];\n" ;
+  e_iter graph (fun id1 id2 lbl -> fprintf ff "LR_%d -> LR_%d [ label = \"%s\"];\n" id1 id2 lbl) ;
+
+  fprintf ff "}\n";
+  close_out ff ;
+  ()
