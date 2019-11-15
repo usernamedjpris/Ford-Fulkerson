@@ -101,9 +101,14 @@ let export path graph =
 
   (* Write in this file. *)
   fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
-
   (* double circle src *)
-  fprintf ff "node [shape = doublecircle]; LR_%d;\n" 0;
+  fprintf ff "node [shape = doublecircle, fillcolor=blue]; LR_%d;\n" 0;
+  (* double circle dest *)
+  (*let last = gmap graph (fun x acu -> max x acu) 0 in 
+    fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" last ;*)
+
+
+
   (* double circle src *)
   fprintf ff "node [shape = circle];\n" ;
   e_iter graph (fun id1 id2 lbl -> fprintf ff "LR_%d -> LR_%d [ label = \"%s\"];\n" id1 id2 lbl) ;

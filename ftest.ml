@@ -1,5 +1,6 @@
 open Gfile
 open Tools
+open Graph
 let () =
 
   (* Check the number of command-line arguments *)
@@ -29,11 +30,12 @@ let () =
 
   (* Rewrite the graph that has been read. *)
   (*let () = write_file outfile (gmap res string_of_int) in*)
-  
-  
-  let path=find_path (gmap graph label_of_string) 0 5 empty_graph in
+
+
+  let path = find_path (gmap graph label_of_string) 0 5 [] in
+
   let () = export outfile (gmap path string_of_label) in
   ()
-  (* let () = export outfile (gmap res string_of_int) in
-  ()
-  *)
+(* let () = export outfile (gmap res string_of_int) in
+   ()
+*)
