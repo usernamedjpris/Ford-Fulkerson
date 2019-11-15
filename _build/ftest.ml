@@ -31,7 +31,7 @@ let () =
   (*let () = write_file outfile (gmap res string_of_int) in*)
   
   
-  let path=find_path (gmap graph label_of_string) 0 5 [] in
+  let path=find_path (gmap graph label_of_string) 0 5 empty in
   let () = export outfile (gmap path string_of_label) in
   ()
   (* let () = export outfile (gmap res string_of_int) in
