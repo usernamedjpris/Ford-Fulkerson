@@ -5,8 +5,8 @@ val clone_nodes: 'a graph -> 'b graph
 val add_arcs: int graph -> id -> id -> int -> int graph
 type labels = { max : int; current : int; }
 
-val label_of_string : string -> (int*int)
-val string_of_label : (int*int) -> string
+val label_of_string : string -> labels
+val string_of_label : labels -> string
 (*val find_path :
   'a graph ->
   id ->
