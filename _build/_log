@@ -1,6 +1,6 @@
 ### Starting build.
 # Target: ftest.ml.depends, tags: { extension:ml, file:ftest.ml, ocaml, ocamldep, quiet }
-ocamldep.opt -modules ftest.ml > ftest.ml.depends
+ocamldep.opt -modules ftest.ml > ftest.ml.depends # cached
 # Target: gfile.mli.depends, tags: { extension:mli, file:gfile.mli, ocaml, ocamldep, quiet }
 ocamldep.opt -modules gfile.mli > gfile.mli.depends # cached
 # Target: graph.mli.depends, tags: { extension:mli, file:graph.mli, ocaml, ocamldep, quiet }
@@ -10,16 +10,13 @@ ocamlc.opt -c -o graph.cmi graph.mli # cached
 # Target: gfile.cmi, tags: { byte, compile, extension:mli, file:gfile.mli, interf, ocaml, quiet }
 ocamlc.opt -c -o gfile.cmi gfile.mli # cached
 # Target: tools.mli.depends, tags: { extension:mli, file:tools.mli, ocaml, ocamldep, quiet }
-ocamldep.opt -modules tools.mli > tools.mli.depends # cached
+ocamldep.opt -modules tools.mli > tools.mli.depends
 # Target: tools.cmi, tags: { byte, compile, extension:mli, file:tools.mli, interf, ocaml, quiet }
-ocamlc.opt -c -o tools.cmi tools.mli # cached
-# Target: ftest.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ftest.cmo, file:ftest.ml, implem, ocaml, quiet }
-ocamlc.opt -c -o ftest.cmo ftest.ml
-+ ocamlc.opt -c -o ftest.cmo ftest.ml
-File "ftest.ml", line 34, characters 54-56:
-34 |   let path=find_path (gmap graph label_of_string) 0 5 [] in
-                                                           ^^
-Error: This expression has type 'a list
-       but an expression was expected of type Tools.labels Graph.graph
+ocamlc.opt -c -o tools.cmi tools.mli
++ ocamlc.opt -c -o tools.cmi tools.mli
+File "tools.mli", line 7, characters 18-29:
+7 | val empty: labels empty_graph
+                      ^^^^^^^^^^^
+Error: Unbound type constructor empty_graph
 Command exited with code 2.
 # Compilation unsuccessful.
