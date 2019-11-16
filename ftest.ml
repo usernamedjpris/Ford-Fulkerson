@@ -1,3 +1,7 @@
+open Gfile
+open Tools
+open Graph
+
 let () =
 
   (* Check the number of command-line arguments *)

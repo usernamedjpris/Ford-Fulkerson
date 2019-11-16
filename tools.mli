@@ -7,15 +7,22 @@ type labels = { max : int; current : int; }
 
 val label_of_string : string -> labels
 val string_of_label : labels -> string
-(*val find_path :
-  'a graph ->
-  id ->
-  id -> 'a graph -> 'a graph*)
 
-
+val min_flow : int -> ('a * ('b * labels)) list -> int
+val update_graphe :
+  int ->
+  labels Graph.graph ->
+  (Graph.id * (Graph.id * labels)) list -> labels Graph.graph
 val find_path :
-  (int * int) Graph.graph ->
+    labels Graph.graph ->
+    Graph.id -> Graph.id ->
+    (Graph.id * (Graph.id * labels)) list -> (Graph.id * (Graph.id * labels)) list
+  
+ (* 
+val find_path :
+  labels Graph.graph ->
   Graph.id ->
   Graph.id ->
-  (Graph.id * (Graph.id * (int * int)) list) list ->
-  (Graph.id * (Graph.id * (int * int)) list) list
+  (Graph.id * (Graph.id * labels) list) list ->
+  (Graph.id * (Graph.id * labels) list) list
+  *)
