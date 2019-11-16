@@ -1,6 +1,3 @@
-open Gfile
-open Tools
-open Graph
 let () =
 
   (* Check the number of command-line arguments *)
@@ -9,7 +6,6 @@ let () =
       Printf.printf "\nUsage: %s infile source sink outfile\n\n%!" Sys.argv.(0) ;
       exit 0
     end ;
-
 
   (* Arguments are : infile(1) source-id(2) sink-id(3) outfile(4) *)
 
@@ -30,12 +26,14 @@ let () =
 
   (* Rewrite the graph that has been read. *)
   (*let () = write_file outfile (gmap res string_of_int) in*)
+  let gr = gmap graph label_of_string in
+  let chemin = find_path gr 0 5 [] in
+  let lemin = min_flow 0 chemin in
 
-
-  let path = find_path (gmap graph label_of_string) 0 5 [] in
+  let path = update_graphe lemin gr chemin in
+  
+  let () = export outfile (gmap path string_of_label) in
   ()
-(*let () = export outfile (gmap path string_of_label) in
-  ()*)
 (* let () = export outfile (gmap res string_of_int) in
    ()
 *)
