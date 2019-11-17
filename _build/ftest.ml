@@ -31,12 +31,12 @@ let () =
   (* Rewrite the graph that has been read. *)
   (*let () = write_file outfile (gmap res string_of_int) in*)
   let gr = gmap graph label_of_string in
-  let chemin = find_path gr 0 5 [] in
-  let lemax = max_flow 9999 chemin in
-
-  let final_graph = update_graphe lemax gr chemin in
+  let debut = 0 in
+  let fin = 5 in
   
-  let () = export outfile (gmap final_graph string_of_label) in
+  let final_graph = ford_fulkerson gr debut fin in
+  
+  let () = export outfile (gmap final_graph string_of_label)debut fin in
   ()
 (* let () = export outfile (gmap res string_of_int) in
    ()

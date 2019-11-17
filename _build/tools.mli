@@ -18,6 +18,10 @@ val find_path :
     Graph.id -> Graph.id ->
     (Graph.id * (Graph.id * labels)) list -> (Graph.id * (Graph.id * labels)) list
   
+ val ford_fulkerson :
+    labels Graph.graph ->
+    Graph.id -> Graph.id ->
+    labels Graph.graph
  (* 
 val find_path :
   labels Graph.graph ->

@@ -66,5 +66,12 @@ let update_graphe lemax g path =
   in
     loop lemax g path;;
 
-
+let ford_fulkerson gr debut fin =
+	let rec loop gr d f=
+		let chemin = find_path gr d f [] in
+			match chemin with
+			|[]->gr
+			|_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
+	in
+	loop gr debut fin
 

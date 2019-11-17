@@ -95,17 +95,18 @@ let from_file path =
   final_graph
 
 
-let export path graph =
+let export path graph debut fin=
   (* Open a write-file. *)
   let ff = open_out path in
 
   (* Write in this file. *)
   fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
   (* double circle src *)
-  fprintf ff "node [shape = doublecircle, fillcolor=blue]; LR_%d;\n" 0;
+  fprintf ff "node [shape = doublecircle, fillcolor=blue]; LR_%d;\n" debut;
   (* double circle dest *)
-  (*let last = gmap graph (fun x acu -> max x acu) 0 in 
-    fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" last ;*)
+   fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" fin ;
+  (*let last = gmap graph (fun x acu -> max x acu) 0 in  *)
+   
 
 
 
