@@ -8,7 +8,7 @@ type labels = { max : int; current : int; }
 val label_of_string : string -> labels
 val string_of_label : labels -> string
 
-val min_flow : int -> ('a * ('b * labels)) list -> int
+val max_flow : int -> ('a * ('b * labels)) list -> int
 val update_graphe :
   int ->
   labels Graph.graph ->

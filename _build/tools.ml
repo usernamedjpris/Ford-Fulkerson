@@ -30,7 +30,7 @@ let label_of_string s=
   {max=(int_of_string s);
    current=0}
 let string_of_label l=
-  string_of_int(l.current)
+  string_of_int(l.current)^"/"^string_of_int(l.max)
 
 let empty = []
 (* add_arcs g accu_arcs *)
@@ -48,23 +48,23 @@ let rec find_path gr id idfin accu =
         loop out
     with Not_found -> []);;
 
-let rec min_flow res = function 
+let rec max_flow res = function 
   | [] -> res
-  | (id,(id2,lab)) :: lereste -> min_flow (min (lab.max - lab.current) res) lereste 
+  | (id,(id2,lab)) :: lereste -> max_flow (min (lab.max - lab.current) res) lereste 
 
 (*let res = find_path ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 1 4 [];;*)
 
 
 
-let update_graphe lemin g path =
-  let rec loop lemin gr path =
+let update_graphe lemax g path =
+  let rec loop lemax gr path =
     match path with 
       |[] -> gr
       |(id1, (id2, lab))::r ->
-          let new_lab = { lab with current = (lab.current + lemin) } in
-            loop lemin (add_arcs_c gr id1 id2 new_lab ) r
+          let new_lab = { lab with current = (lab.current + lemax) } in
+            loop lemax (add_arcs_c gr id1 id2 new_lab ) r
   in
-    loop lemin g path;;
+    loop lemax g path;;
 
 
 
