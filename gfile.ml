@@ -116,18 +116,19 @@ let export path graph debut fin=
 
 
 
-
+type projet = {id: int ; ptitnom: string ; nomcomplet: string}
+type etudiant = {id: int ; initiale : string}
 
 (* Reads a line with a node. *)
 let read_projet id graph line =
-  try Scanf.sscanf line "p %s %d %s" (fun _ _ _-> new_node graph id) (*+essayer de faire un arc vers le puits*)
+  try Scanf.sscanf line "p %s %d %s" (fun _ nbmax _-> new_node graph id ; new_arc graph id 2 {max = nbmax ; current = 0 ; visited = false}) (*puits id=2*)
   with e ->
     Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "from_file"
 
 (* Reads a line with an arc. *)
-let read_etudiant graph line =
-  try Scanf.sscanf line "e %s %s %s" (fun id1 id2 label -> new_arc graph id1 id2 label) (*faire lien projet1 et etudiant et projet2 et etudiant*)
+let read_etudiant id graph line =
+  try Scanf.sscanf line "e %s %s %s" (fun _ str_proj1 str_proj2 -> new_node graph id ; new_arc graph id1 id2 label) (*faire lien projet1 -> etudiant -> projet2 et etudiant et source -> etudiant*)
   with e ->
     Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "from_file"
