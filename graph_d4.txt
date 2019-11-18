@@ -1,0 +1,16 @@
+digraph finite_state_machine {
+ rankdir=LR;
+	size="8,5";
+node [shape = doublecircle, fillcolor=blue]; LR_0;
+node [shape = doublecircle, fillcolor=red]; LR_5;
+node [shape = circle];
+LR_1 -> LR_3 [ label = "12/12"];
+LR_3 -> LR_2 [ label = "4/9"];
+LR_3 -> LR_5 [ label = "15/20"];
+LR_4 -> LR_5 [ label = "4/4"];
+LR_4 -> LR_3 [ label = "7/7"];
+LR_2 -> LR_1 [ label = "0/4"];
+LR_2 -> LR_4 [ label = "11/14"];
+LR_0 -> LR_1 [ label = "12/16"];
+LR_0 -> LR_2 [ label = "7/13"];
+}

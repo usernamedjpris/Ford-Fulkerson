@@ -36,7 +36,7 @@ let () =
   
   let final_graph = ford_fulkerson gr debut fin in
   
-  let () = export outfile (gmap final_graph string_of_label)debut fin in
+  let () = export outfile (gmap final_graph string_of_label) debut fin in
   ()
 (* let () = export outfile (gmap res string_of_int) in
    ()
