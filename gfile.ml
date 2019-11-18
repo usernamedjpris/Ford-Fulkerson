@@ -104,11 +104,7 @@ let export path graph debut fin=
   (* double circle src *)
   fprintf ff "node [shape = doublecircle, fillcolor=blue]; LR_%d;\n" debut;
   (* double circle dest *)
-   fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" fin ;
-  (*let last = gmap graph (fun x acu -> max x acu) 0 in  *)
-   
-
-
+  fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" fin ;
 
   (* double circle src *)
   fprintf ff "node [shape = circle];\n" ;
@@ -117,3 +113,57 @@ let export path graph debut fin=
   fprintf ff "}\n";
   close_out ff ;
   ()
+
+
+
+type projet = {id: int ; ptitnom: string ; nomcomplet: string}
+type etudiant = {id: int ; initiale : string}
+
+(* Reads a line with a node. *)
+let read_projet id graph line =
+  try Scanf.sscanf line "p %s %d %s" (fun _ nbmax _-> new_node graph id ; new_arc graph id 2 {max = nbmax ; current = 0 ; visited = false}) (*puits id=2*)
+  with e ->
+    Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
+    failwith "from_file"
+
+(* Reads a line with an arc. *)
+let read_etudiant id graph line =
+  try Scanf.sscanf line "e %s %s %s" (fun _ str_proj1 str_proj2 -> new_node graph id ; new_arc graph id1 id2 label) (*faire lien projet1 -> etudiant -> projet2 et etudiant et source -> etudiant*)
+  with e ->
+    Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
+    failwith "from_file"
+
+(* import affectations as string graph*)
+let import path = 
+  let infile = open_in path in
+
+  (* Read all lines until end of file. 
+   * n is the current node counter. *)
+  let rec loop n graph =
+    try
+      let line = input_line infile in
+
+      (* Remove leading and trailing spaces. *)
+      let line = String.trim line in
+
+      let (n2, graph2) =
+        (* Ignore empty lines *)
+        if line = "" then (n, graph)
+
+        (* The first character of a line determines its content : n or e. *)
+        else match line.[0] with
+          | 'n' -> (n+1, read_node n graph line)
+          | 'e' -> (n, read_arc graph line)
+
+          (* It should be a comment, otherwise we complain. *)
+          | _ -> (n, read_comment graph line)
+      in      
+      loop n2 graph2
+
+    with End_of_file -> graph (* Done *)
+  in
+
+  let final_graph = loop 0 empty_graph in
+
+  close_in infile ;
+  final_graph
