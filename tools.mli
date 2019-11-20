@@ -5,7 +5,7 @@ val clone_nodes: 'a graph -> 'b graph
 val add_arcs: int graph -> id -> id -> int -> int graph
 
 type labels = { max : int; current : int; visited: bool ; cost: int}
-
+type parents = { origin : int ; arc : labels}
 
 val label_of_string : string -> labels
 val string_of_label : labels -> string
@@ -16,7 +16,7 @@ val update_graphe :
   int ->
   labels Graph.graph ->
   (Graph.id * (Graph.id * labels)) list -> labels Graph.graph
-val find_path :
+val find_path_ford :
   labels Graph.graph ->
   Graph.id -> Graph.id ->
   (Graph.id * (Graph.id * labels)) list -> (Graph.id * (Graph.id * labels)) list
