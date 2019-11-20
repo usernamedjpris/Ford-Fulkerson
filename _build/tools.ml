@@ -72,7 +72,7 @@ let rec find_path_ford gr id idfin accu =
         loop out
     with Not_found -> []);;
 
-let empty_parent={origin=0;arc={max=0;current=0;visited=false;cost=0}}
+let empty_parent={origin=(-1);arc={max=0;current=0;visited=false;cost=0}}
 let init_list gr=
   n_fold gr (fun accu id->if id =0 then (0,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
 
@@ -108,7 +108,11 @@ let reconstitution liste iddebut idfin=
     match l with
       |[]->accu
       |(id, cost,parent,marked)::r ->
-          if id = idwanted then loop l ((parent.origin,(id,parent.arc))::accu) parent.origin 
+          if id = idwanted then 
+            if parent.origin != (-1) then
+              loop l ((parent.origin,(id,parent.arc))::accu) parent.origin 
+            else
+              accu
           else loop r accu idwanted
   in
     loop liste [] idfin
