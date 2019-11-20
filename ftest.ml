@@ -22,7 +22,7 @@ let () =
   in
 
   (* Open file *)
-  let graph = from_file infile in
+  let graph = import infile in
 
   (*ajout et insertion test *)
   (* let res = add_arcs (add_arcs (gmap graph int_of_string) 1 2 1000) 0 3 999 in *)
@@ -30,12 +30,12 @@ let () =
 
   (* Rewrite the graph that has been read. *)
   (*let () = write_file outfile (gmap res string_of_int) in*)
-  let gr = gmap graph label_of_string in
+  (*let gr = gmap graph label_of_string in*)
   let debut = 0 in
-  let fin = 5 in
-  
-  let final_graph = ford_fulkerson gr debut fin in
-  
+  let fin = 1 in
+
+  let final_graph = ford_fulkerson graph debut fin in
+
   let () = export outfile (gmap final_graph string_of_label) debut fin in
   ()
 (* let () = export outfile (gmap res string_of_int) in

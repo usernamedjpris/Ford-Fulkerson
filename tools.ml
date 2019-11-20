@@ -10,14 +10,14 @@ loop g f *)
 let clone_nodes g = n_fold g new_node empty_graph;;
 let add_arcs g id1 id2 lab = 
   match find_arc g id1 id2 with
-    |None -> new_arc g id1 id2 (lab)
-    |Some x -> new_arc g id1 id2 (lab+x);;
+  |None -> new_arc g id1 id2 (lab)
+  |Some x -> new_arc g id1 id2 (lab+x);;
 
 (* peut etre directement remplacée par new_arc *)
 let add_arcs_c g id1 id2 lab = 
   match find_arc g id1 id2 with
-    |None -> raise Not_found
-    |Some x -> new_arc g id1 id2 lab;;
+  |None -> raise Not_found
+  |Some x -> new_arc g id1 id2 lab;;
 
 (* la fonction new_arc ne crée pas de node, parmi ceux qui lui sont passés (tous via l'accu) elle ajoute des arcs=> on reconstruit le graphe comme ça => si noeud inexistant (ec: empty_graph => raise exception )*)
 let gmap g f = e_fold g (fun gr id1 id2 lab-> new_arc gr id1 id2 (f lab)) (clone_nodes g);;
@@ -25,13 +25,16 @@ let gmap g f = e_fold g (fun gr id1 id2 lab-> new_arc gr id1 id2 (f lab)) (clone
 let res= gmap empty_graph int_of_string;;
 *)
 type labels = 
-    { max: int;
-      current: int;
-      visited: bool}
+  { max: int;
+    current: int;
+    visited: bool;
+    cost: int}
 
 let label_of_string s=
   {max=(int_of_string s);
-   current=0;visited=false}
+   current=0;
+   visited=false ;
+   cost= 0}                        (*<- /!\ a remplacer avec un sscanf !!!!!!*)
 
 let string_of_label l=
   string_of_int(l.current)^"/"^string_of_int(l.max)
@@ -45,25 +48,25 @@ let not_visited_node gr id=
   try let out = (out_arcs gr id) in
     let rec loop reste =
       match reste with 
-        |[] -> true
-        |(id2,lab)::r-> if (lab.visited) then false else loop r in
-      loop out
+      |[] -> true
+      |(id2,lab)::r-> if (lab.visited) then false else loop r in
+    loop out
   with Not_found -> false;;
-	   
+
 let rec find_path gr id idfin accu =
   if id = idfin then accu else (
     try let out = (out_arcs gr id) in 
       let rec loop reste =
         match reste with 
-          |[] -> []
-          |(id2,lab)::r-> if (((lab.max - lab.current) > 0) && (not_visited_node gr id2))  then 
-                let chemin= (find_path (add_arcs_c gr id id2 { lab with visited = true }) id2 idfin ((id,(id2,lab))::accu) ) in
-                  match chemin with
-                    |[]-> loop r
-                    |_->chemin
-              else loop r 
+        |[] -> []
+        |(id2,lab)::r-> if (((lab.max - lab.current) > 0) && (not_visited_node gr id2))  then 
+            let chemin= (find_path (add_arcs_c gr id id2 { lab with visited = true }) id2 idfin ((id,(id2,lab))::accu) ) in
+            match chemin with
+            |[]-> loop r
+            |_->chemin
+          else loop r 
       in
-        loop out
+      loop out
     with Not_found -> []);;
 
 let rec max_flow res = function 
@@ -77,19 +80,19 @@ let rec max_flow res = function
 let update_graphe lemax g path =
   let rec loop lemax gr path =
     match path with 
-      |[] -> gr
-      |(id1, (id2, lab))::r ->
-          let new_lab = { lab with current = (lab.current + lemax); visited = false } in
-            loop lemax (add_arcs_c gr id1 id2 new_lab ) r
+    |[] -> gr
+    |(id1, (id2, lab))::r ->
+      let new_lab = { lab with current = (lab.current + lemax); visited = false } in
+      loop lemax (add_arcs_c gr id1 id2 new_lab ) r
   in
-    loop lemax g path;;
+  loop lemax g path;;
 
 let ford_fulkerson gr debut fin =
   let rec loop gr d f=
     let chemin = find_path gr d f [] in
-      match chemin with
-        |[]->gr
-        |_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
+    match chemin with
+    |[]->gr
+    |_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
   in
-    loop gr debut fin
+  loop gr debut fin
 

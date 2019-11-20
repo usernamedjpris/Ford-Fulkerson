@@ -18,4 +18,4 @@ val export: path -> string graph -> Graph.id -> Graph.id -> unit
    https://www-m9.ma.tum.de/graph-algorithms/flow-ford-fulkerson/index_en.html
 *)
 (*import affectations as string graph*)
-val import: path -> string graph
+val import: path -> Tools.labels graph
