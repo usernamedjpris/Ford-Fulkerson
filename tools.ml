@@ -1,53 +1,4 @@
-(*open Graph *)
-type id = int
-
-type 'a out_arcs = (id * 'a) list
-
-(* A graph is just a list of pairs: a node & its outgoing arcs. *)
-type 'a graph = (id * 'a out_arcs) list
-
-exception Graph_error of string
-
-let empty_graph = []
-
-let node_exists gr id = List.mem_assoc id gr
-
-let out_arcs gr id =
-  try List.assoc id gr
-  with Not_found -> raise (Graph_error ("Node " ^ string_of_int id ^ " does not exist in this graph."))
-
-let find_arc gr id1 id2 =
-  let out = out_arcs gr id1 in
-    try Some (List.assoc id2 out)
-    with Not_found -> None
-
-let new_node gr id =
-  if node_exists gr id then raise (Graph_error ("Node " ^ string_of_int id ^ " already exists in the graph."))
-  else (id, []) :: gr
-
-let new_arc gr id1 id2 lbl =
-
-  (* Existing out-arcs *)
-  let outa = out_arcs gr id1 in
-
-  (* Update out-arcs.
-   * remove_assoc does not fail if id2 is not bound.  *)
-  let outb = (id2, lbl) :: List.remove_assoc id2 outa in
-
-  (* Replace out-arcs in the graph. *)
-  let gr2 = List.remove_assoc id1 gr in
-    (id1, outb) :: gr2
-
-let n_iter gr f = List.iter (fun (id, _) -> f id) gr
-
-let n_iter_sorted gr f = n_iter (List.sort compare gr) f
-
-let n_fold gr f acu = List.fold_left (fun acu (id, _) -> f acu id) acu gr
-
-let e_iter gr f = List.iter (fun (id1, out) -> List.iter (fun (id2, x) -> f id1 id2 x) out) gr
-
-let e_fold gr f acu = List.fold_left (fun acu (id1, out) -> List.fold_left (fun acu (id2, x) -> f acu id1 id2 x) acu out) acu gr
-
+open Graph 
 (*
 let gmap g f = 
 let rec loop node_r f=
@@ -121,8 +72,9 @@ let rec find_path_ford gr id idfin accu =
         loop out
     with Not_found -> []);;
 
+let empty_parent={origin=0;arc={max=0;current=0;visited=false;cost=0}}
 let init_list gr=
-  n_fold gr (fun accu id->if id =0 then (0,0,(-1),false)::accu else (id,9999,(-1),false)::accu) []
+  n_fold gr (fun accu id->if id =0 then (0,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
 
 let maj_node_list liste id cost parent marked=
   ((id, cost,parent,marked) ::  List.filter (fun (i, cost,parent,marked)->(i!=id) ) liste);; (*List.remove_assoc id liste ;; *)
@@ -138,8 +90,8 @@ let maj_list_mark liste id =
 let select_node liste =
   let rec loop elected min reste=
     match liste with
-      |[]->elected
-      |(id, cost,parent,marked)::r ->if (marked =false && cost <min ) then loop id cost r else loop elected min r
+      |[]->if elected != (-1) then elected else raise Not_found
+      |(id, cost,parent,marked)::r ->if (marked =false && cost <min && ((parent.arc.max - parent.arc.current)>0)) then loop id cost r else loop elected min r
   in
     loop (-1) 9999 liste;;
 
@@ -150,7 +102,7 @@ let rec get_current_cost liste id=
 
 
 (* si on veut de meilleures perfs => remplacer la liste par un Array (mutable) => évite de faire des parcours de liste pour trouver chq element
-   la correspondance id node, index tableau étant instantanée *)
+   la correspondance id node, index tableau étant instantanée, si possibilité il y avait de modifier la définition d'un graphe, on créerait un type label_node et on n'aurait pas à maintenir de liste  *)
 let reconstitution liste iddebut idfin=
   let rec loop l accu idwanted=
     match l with
@@ -165,8 +117,8 @@ let reconstitution liste iddebut idfin=
 (*remplacer find_path par un find_shortest_path_available => dijkstra+check lab.max - lab.current) > 0 *)
 (* via a list of (id,cost, next *)
 let find_path gr iddebut idfin=
-  let liste= init_list gr in 
-  let rec loop0 gr id_courant idfin  l=
+  let liste = init_list gr in 
+  let rec loop0 gr id_courant idfin l=
     if id_courant = idfin then reconstitution l iddebut idfin else (
       try let out = (out_arcs gr id_courant) in 
         let rec loop reste l=
@@ -181,10 +133,9 @@ let find_path gr iddebut idfin=
                     loop r l
         in
           loop out l
+      with Not_found -> [])
   in
     loop0 gr iddebut idfin liste
-with Not_found -> []);;
-
 
 let update_graphe lemax g path =
   let rec loop lemax gr path =
@@ -194,12 +145,11 @@ let update_graphe lemax g path =
           let new_lab = { lab with current = (lab.current + lemax); visited = false } in
             loop lemax (add_arcs_c gr id1 id2 new_lab ) r
   in
-    loop lemax g path;;
-   
+    loop lemax g path
+
 let rec max_flow res = function 
   | [] -> res
-  | (id,(id2,lab)) :: lereste -> max_flow (min (lab.max - lab.current) res) lereste 
-   
+  | (id,(id2,lab)) :: lereste -> max_flow (min (lab.max - lab.current) res) lereste
 
 let ford_fulkerson gr debut fin =
   let rec loop gr d f=
@@ -210,7 +160,15 @@ let ford_fulkerson gr debut fin =
   in
     loop gr debut fin
 
-   
+let max_flow_min_cost gr debut fin =
+  let rec loop gr d f=
+    let chemin = find_path gr d f in
+      match chemin with
+        |[]->gr
+        |_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
+  in
+    loop gr debut fin
+
 (*let res = find_path ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 1 4 [];;*)
-   
+
 

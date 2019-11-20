@@ -1,6 +1,6 @@
 open Graph
 open Printf
-
+open Tools
 type path = string
 
 (* Format of text files:
@@ -104,11 +104,7 @@ let export path graph debut fin=
   (* double circle src *)
   fprintf ff "node [shape = doublecircle, fillcolor=blue]; LR_%d;\n" debut;
   (* double circle dest *)
-   fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" fin ;
-  (*let last = gmap graph (fun x acu -> max x acu) 0 in  *)
-   
-
-
+  fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" fin ;
 
   (* double circle src *)
   fprintf ff "node [shape = circle];\n" ;
@@ -117,3 +113,65 @@ let export path graph debut fin=
   fprintf ff "}\n";
   close_out ff ;
   ()
+
+
+
+type projet = {id: int ; ptitnom: string ; nomcomplet: string}
+type etudiant = {id: int ; initiale : string}
+
+(* Reads a line with a project. retourne la liste projects mise a jour*)
+let read_projet id graph line projects =
+  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax nomcomplet -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0}) ,
+                                                                      {id = id; ptitnom = ptitnom ; nomcomplet = nomcomplet} :: projects) (*puits id=1*)
+  with e ->
+    Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
+    failwith "import projet"
+
+(* Reads a line with an etudiant. retourne la liste etudiants mise a jour *)
+let read_etudiant id gr line projects etudiants =
+  try Scanf.sscanf line "e %s %s %s" (fun initiales str_proj1 str_proj2 -> (*fait lien projet1 <- etudiant -> projet2 et etudiant et source -> etudiant*)
+      let graph = new_node gr id in
+      let rec search str_proj = function
+        |[] -> failwith "Projet non défini"
+        |proj :: r -> if proj.ptitnom = str_proj then proj.id else search str_proj r
+      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0}  (*source -> etudiant*)) id (search str_proj2 projects) {max = 1 ; current = 0 ; visited = false ; cost = 0}) id (search str_proj1 projects) {max = 1 ; current = 0 ; visited = false ; cost = 1} , 
+         {id = id ; initiale = initiales} :: etudiants)
+  with e ->
+    Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
+    failwith "import etudiant"
+
+
+(* import affectations as string graph*)
+let import path = 
+  let infile = open_in path in
+
+  (* Read all lines until end of file. 
+   * n is the current project/etudiant counter. *)
+  let rec loop n graph projet etudiant =
+    try
+      let line = input_line infile in
+
+      (* Remove leading and trailing spaces. *)
+      let line = String.trim line in
+
+      let (n2, graph2, pro, etud) =
+        (* Ignore empty lines *)
+        if line = "" then (n, graph, projet, etudiant)
+
+        (* The first character of a line determines its content : p or e. *)
+        else match line.[0] with
+          | 'p' -> (match read_projet n graph line projet with (gr, proj) -> n+1, gr, proj, etudiant)
+          | 'e' -> (match read_etudiant n graph line projet etudiant with (gr, etud) -> n+1, gr, projet, etud)
+
+          (* It should be a comment, otherwise we complain. *)
+          | _ -> (n, read_comment graph line, projet, etudiant)
+      in      
+      loop n2 graph2 pro etud
+
+    with End_of_file -> graph, projet, etudiant (* Done *)
+  in
+
+  let final_graph = match loop 2 (new_node (new_node empty_graph 0) 1) [] [] with (gr, p, e) -> gr in (*acu n fixé à 2 car puits et source sont déjà 1 et 2*)
+
+  close_in infile ;
+  final_graph
