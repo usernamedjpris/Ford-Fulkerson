@@ -41,7 +41,7 @@ let label_of_string s=
    cost= 0}                        (*<- /!\ a remplacer avec un sscanf !!!!!!*)
 
 let string_of_label l=
-  string_of_int(l.current)^"/"^string_of_int(l.max)
+  string_of_int(l.current)^"/"^string_of_int(l.max)^"/cost="^string_of_int(l.cost)
 
 (* add_arcs g accu_arcs *)
 (* find arcs to use then add_arcs_labels min accu labels_arcs *)
@@ -103,8 +103,11 @@ let rec get_current_cost liste id=
     |(id1, cost,parent,marked)::r-> if id1 = id then cost else get_current_cost r id
 
 
-(* si on veut de meilleures perfs => remplacer la liste par un Array (mutable) => évite de faire des parcours de liste pour trouver chq element
-   la correspondance id node, index tableau étant instantanée, si possibilité il y avait de modifier la définition d'un graphe, on créerait un type label_node et on n'aurait pas à maintenir de liste  *)
+(* si on veut de meilleures perfs => 
+   1)remplacer la liste par un Array (mutable) => évite de faire des parcours de liste pour trouver chq element
+   la correspondance id node, index tableau étant instantanée,
+   2) si possibilité il y avait de modifier la définition d'un graphe, on créerait un type label_node et on n'aurait pas à maintenir de liste  
+*)
 let reconstitution liste idfin=
   let rec loop l accu idwanted=
     match l with
