@@ -26,9 +26,9 @@ ocamldep.opt -modules tools.ml > tools.ml.depends
 # Target: tools.cmx, tags: { compile, extension:cmx, extension:ml, file:tools.cmx, file:tools.ml, implem, native, ocaml, quiet }
 ocamlopt.opt -c -o tools.cmx tools.ml
 # Target: gfile.cmx, tags: { compile, extension:cmx, extension:ml, file:gfile.cmx, file:gfile.ml, implem, native, ocaml, quiet }
-ocamlopt.opt -c -o gfile.cmx gfile.ml
+ocamlopt.opt -c -o gfile.cmx gfile.ml # cached
 # Target: ftest.cmx, tags: { compile, extension:cmx, extension:ml, file:ftest.cmx, file:ftest.ml, implem, native, ocaml, quiet }
-ocamlopt.opt -c -o ftest.cmx ftest.ml
+ocamlopt.opt -c -o ftest.cmx ftest.ml # cached
 # Target: ftest.native, tags: { dont_link_with, extension:native, file:ftest.native, link, native, ocaml, program, quiet }
 ocamlopt.opt graph.cmx tools.cmx gfile.cmx ftest.cmx -o ftest.native
 # Compilation successful.

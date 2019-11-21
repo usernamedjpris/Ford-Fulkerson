@@ -7,7 +7,7 @@ val add_arcs: int graph -> id -> id -> int -> int graph
 type labels = { max : int; current : int; visited: bool ; cost: int}
 type parents = { origin : int ; arc : labels}
 
-val init_list : 'a Graph.graph -> (int * int * parents * bool) list
+val init_list : 'a Graph.graph -> Graph.id -> (int * int * parents * bool) list
 val maj_node_list :
   ('a * 'b * 'c * 'd) list ->
   'a -> 'b -> 'c -> 'd -> ('a * 'b * 'c * 'd) list
@@ -17,7 +17,7 @@ val maj_list_mark :
 val select_node : (int * int * parents * bool) list -> int 
 val get_current_cost : ('a * 'b * 'c * 'd) list -> 'a -> 'b
 val reconstitution :
-  (int * 'a * parents * 'b) list -> 'c -> int -> (int * (int * labels)) list
+  (int * 'a * parents * 'b) list -> int -> (int * (int * labels)) list
 val find_path :
    labels Graph.graph ->
    Graph.id -> Graph.id -> (int * (Graph.id * labels)) list

@@ -1,5 +1,5 @@
-(*open Graph*)
-#use "/mnt/c/Users/FACHE Rémi/Documents/Programmation/ocaml/Ford-Fulkerson/graph.ml"
+open Graph
+(*#use "/mnt/c/Users/FACHE Rémi/Documents/Programmation/ocaml/Ford-Fulkerson/graph.ml" *)
 (*
 let gmap g f = 
 let rec loop node_r f=
@@ -83,15 +83,15 @@ let maj_node_list liste id cost parent marked=
 
 let maj_list_mark liste id =
   let rec loop l id=
-    match liste with
+    match l with
       |[]->raise Not_found
-      |(id1, cost,parent,marked)::r ->if id1 = id then maj_node_list l id cost parent true else loop r id
+      |(id1, cost,parent,marked)::r ->if id1 = id then maj_node_list liste id cost parent true else loop r id
   in
     loop liste id;;
 
 let select_node liste =
   let rec loop elected min reste=
-    match liste with
+    match reste with
       |[]->if elected != (-1) then elected else raise Not_found
       |(id, cost,parent,marked)::r ->if (marked =false && cost <min && ((parent.arc.max - parent.arc.current)>0)) then loop id cost r else loop elected min r
   in
@@ -126,7 +126,7 @@ let reconstitution liste idfin=
 let find_path gr iddebut idfin=
   let liste = init_list gr iddebut in 
   let rec loop0 gr id_courant idfin l=
-    if id_courant = idfin then reconstitution l iddebut idfin else (
+    if id_courant = idfin then reconstitution l idfin else (
       try let out = (out_arcs gr id_courant) in 
         let rec loop reste l=
           match reste with 
@@ -178,12 +178,17 @@ let max_flow_min_cost gr debut fin =
 
 (*let res = find_path ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 1 4 [];;*)
 
+(*
 let majed=maj_node_list (init_list ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (3,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 0) 4 42 {origin=3; arc = {max=25;current=0;visited=false;cost=10}} true;;
 majed;;
 reconstitution majed 4;; (* chemin censé exister => ok *)
-let maj2=(maj_node_list majed 2 20 {origin=0; arc = {max=25;current=0;visited=false;cost=10}} true);;
+let maj2=(maj_node_list majed 2 22 {origin=0; arc = {max=25;current=0;visited=false;cost=10}} true);;
 maj2;;
-let maj3=(maj_node_list maj2 3 20 {origin=2; arc = {max=25;current=0;visited=false;cost=10}} true);;
+let maj3=(maj_node_list maj2 3 20 {origin=2; arc = {max=25;current=0;visited=false;cost=10}} false);;
 maj3;;
 reconstitution maj3 4
 ;;
+get_current_cost maj3 2;;
+select_node maj3;;
+maj_list_mark maj3 1;;
+*)
