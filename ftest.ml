@@ -32,7 +32,7 @@ let () =
   (*let () = write_file outfile (gmap res string_of_int) in*)
   let gr = gmap graph label_of_string in
   let debut = 0 in
-  let fin = 1 in
+  let fin = 5 in
 
   let final_graph = max_flow_min_cost gr debut fin in
 

@@ -93,7 +93,7 @@ let select_node liste =
   let rec loop elected min reste=
     match reste with
       |[]->if elected != (-1) then elected else raise Not_found
-      |(id, cost,parent,marked)::r ->if (marked =false && cost <min && ((parent.arc.max - parent.arc.current)>0)) then loop id cost r else loop elected min r
+      |(id, cost,parent,marked)::r ->if (marked =false && cost <min ) then loop id cost r else loop elected min r
   in
     loop (-1) 9999 liste;;
 
@@ -133,7 +133,7 @@ let find_path gr iddebut idfin=
             |[]->let new_liste= maj_list_mark l id_courant in
                   loop0 gr (select_node new_liste) idfin  new_liste
             |(id2,lab)::r->let cout=(lab.cost+ (get_current_cost l id_courant)) in 
-                  if cout < (get_current_cost l id2) then 
+                  if cout < (get_current_cost l id2) && (lab.max - lab.current) >0 then 
                     let new_liste= maj_node_list l id2 cout {origin=id_courant;arc=lab} false in
                       loop r new_liste
                   else
