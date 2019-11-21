@@ -20,23 +20,23 @@ let () =
   and _sink = int_of_string Sys.argv.(3)
   in
 
-  let gr = import infile in  (*from_file *) 
+  let (gr, projets_etudiants) = import infile in  (*from_file *) 
   (*let gr = gmap graph label_of_string in *)
   let debut = _source in
   let fin = _sink in
 
   let final_graph = max_flow_min_cost gr debut fin in
 
-  let () = export outfile (gmap final_graph string_of_label) debut fin in (*final_graph*)
+  let () = export2 outfile final_graph projets_etudiants in (*final_graph*)
   ()
-  
-  
+
+
 (* let () = export outfile (gmap res string_of_int) in
    ()
 *)
-  (*ajout et insertion test *)
-  (* let res = add_arcs (add_arcs (gmap graph int_of_string) 1 2 1000) 0 3 999 in *)
-  (* let res=clone_nodes graph in *)
+(*ajout et insertion test *)
+(* let res = add_arcs (add_arcs (gmap graph int_of_string) 1 2 1000) 0 3 999 in *)
+(* let res=clone_nodes graph in *)
 
-  (* Rewrite the graph that has been read. *)
-  (*let () = write_file outfile (gmap res string_of_int) in*)
+(* Rewrite the graph that has been read. *)
+(*let () = write_file outfile (gmap res string_of_int) in*)
