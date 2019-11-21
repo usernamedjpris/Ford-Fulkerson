@@ -1,4 +1,5 @@
-open Graph 
+(*open Graph*)
+#use "/mnt/c/Users/FACHE Rémi/Documents/Programmation/ocaml/Ford-Fulkerson/graph.ml"
 (*
 let gmap g f = 
 let rec loop node_r f=
@@ -73,8 +74,9 @@ let rec find_path_ford gr id idfin accu =
     with Not_found -> []);;
 
 let empty_parent={origin=(-1);arc={max=0;current=0;visited=false;cost=0}}
-let init_list gr=
-  n_fold gr (fun accu id->if id =0 then (0,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
+
+let init_list gr iddebut=
+  n_fold gr (fun accu id->if id =iddebut then (iddebut,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
 
 let maj_node_list liste id cost parent marked=
   ((id, cost,parent,marked) ::  List.filter (fun (i, cost,parent,marked)->(i!=id) ) liste);; (*List.remove_assoc id liste ;; *)
@@ -103,17 +105,18 @@ let rec get_current_cost liste id=
 
 (* si on veut de meilleures perfs => remplacer la liste par un Array (mutable) => évite de faire des parcours de liste pour trouver chq element
    la correspondance id node, index tableau étant instantanée, si possibilité il y avait de modifier la définition d'un graphe, on créerait un type label_node et on n'aurait pas à maintenir de liste  *)
-let reconstitution liste iddebut idfin=
+let reconstitution liste idfin=
   let rec loop l accu idwanted=
     match l with
       |[]->accu
       |(id, cost,parent,marked)::r ->
-          if id = idwanted then 
-            if parent.origin != (-1) then
-              loop l ((parent.origin,(id,parent.arc))::accu) parent.origin 
-            else
+          if id = idwanted then (
+            if parent.origin = (-1)  then
               accu
-          else loop r accu idwanted
+            else
+              loop liste ((parent.origin,(id,parent.arc))::accu) (parent.origin) )
+          else 
+            loop r accu idwanted
   in
     loop liste [] idfin
 
@@ -121,7 +124,7 @@ let reconstitution liste iddebut idfin=
 (*remplacer find_path par un find_shortest_path_available => dijkstra+check lab.max - lab.current) > 0 *)
 (* via a list of (id,cost, next *)
 let find_path gr iddebut idfin=
-  let liste = init_list gr in 
+  let liste = init_list gr iddebut in 
   let rec loop0 gr id_courant idfin l=
     if id_courant = idfin then reconstitution l iddebut idfin else (
       try let out = (out_arcs gr id_courant) in 
@@ -171,8 +174,16 @@ let max_flow_min_cost gr debut fin =
         |[]->gr
         |_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
   in
-    loop gr debut fin
+    loop gr debut fin;;
 
 (*let res = find_path ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 1 4 [];;*)
 
-
+let majed=maj_node_list (init_list ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (3,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 0) 4 42 {origin=3; arc = {max=25;current=0;visited=false;cost=10}} true;;
+majed;;
+reconstitution majed 4;; (* chemin censé exister => ok *)
+let maj2=(maj_node_list majed 2 20 {origin=0; arc = {max=25;current=0;visited=false;cost=10}} true);;
+maj2;;
+let maj3=(maj_node_list maj2 3 20 {origin=2; arc = {max=25;current=0;visited=false;cost=10}} true);;
+maj3;;
+reconstitution maj3 4
+;;
