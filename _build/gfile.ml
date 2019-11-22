@@ -116,62 +116,89 @@ let export path graph debut fin=
 
 
 
-type projet = {id: int ; ptitnom: string ; nomcomplet: string}
-type etudiant = {id: int ; initiale : string}
+type node = {id: int ; ptitnom: string}
+
+
+let rec get_ptitnom i = function
+  | []->"DF"
+  | e :: r -> if e.id = i then e.ptitnom else get_ptitnom i r 
 
 (* Reads a line with a project. retourne la liste projects mise a jour*)
 let read_projet id graph line projects =
-  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax nomcomplet -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0}) ,
-                                                                      {id = id; ptitnom = ptitnom ; nomcomplet = nomcomplet} :: projects) (*puits id=1*)
+  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax _ -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0}) ,
+                                                             {id = id; ptitnom = ptitnom} :: projects) (*puits id=1*)
   with e ->
     Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "import projet"
 
 (* Reads a line with an etudiant. retourne la liste etudiants mise a jour *)
-let read_etudiant id gr line projects etudiants =
+let read_etudiant id gr line projects_etudiants =
   try Scanf.sscanf line "e %s %s %s" (fun initiales str_proj1 str_proj2 -> (*fait lien projet1 <- etudiant -> projet2 et etudiant et source -> etudiant*)
       let graph = new_node gr id in
       let rec search str_proj = function
         |[] -> failwith "Projet non défini"
         |proj :: r -> if proj.ptitnom = str_proj then proj.id else search str_proj r
-      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0}  (*source -> etudiant*)) id (search str_proj2 projects) {max = 1 ; current = 0 ; visited = false ; cost = 0}) id (search str_proj1 projects) {max = 1 ; current = 0 ; visited = false ; cost = 1} , 
-         {id = id ; initiale = initiales} :: etudiants)
+      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0}  (*source -> etudiant*)) id (search str_proj2 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 1}) id (search str_proj1 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 0} , 
+         {id = id ; ptitnom = initiales} :: projects_etudiants)
   with e ->
     Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "import etudiant"
 
 
-(* import affectations as string graph*)
+(* import affectations as graph*)
 let import path = 
   let infile = open_in path in
 
   (* Read all lines until end of file. 
    * n is the current project/etudiant counter. *)
-  let rec loop n graph projet etudiant =
+  let rec loop n graph projet_etudiant =
     try
       let line = input_line infile in
 
       (* Remove leading and trailing spaces. *)
       let line = String.trim line in
 
-      let (n2, graph2, pro, etud) =
+      let (n2, graph2, pro_etud) =
         (* Ignore empty lines *)
-        if line = "" then (n, graph, projet, etudiant)
+        if line = "" then (n, graph, projet_etudiant)
 
         (* The first character of a line determines its content : p or e. *)
         else match line.[0] with
-          | 'p' -> (match read_projet n graph line projet with (gr, proj) -> n+1, gr, proj, etudiant)
-          | 'e' -> (match read_etudiant n graph line projet etudiant with (gr, etud) -> n+1, gr, projet, etud)
+          | 'p' -> (match read_projet n graph line projet_etudiant with (gr, proj) -> n+1, gr, proj)
+          | 'e' -> (match read_etudiant n graph line projet_etudiant with (gr, etud) -> n+1, gr, etud)
 
           (* It should be a comment, otherwise we complain. *)
-          | _ -> (n, read_comment graph line, projet, etudiant)
+          | _ -> (n, read_comment graph line, projet_etudiant)
       in      
-      loop n2 graph2 pro etud
+      loop n2 graph2 pro_etud
 
-    with End_of_file -> graph, projet, etudiant (* Done *)
+    with End_of_file -> graph, projet_etudiant (* Done *)
   in
 
-  let final_graph = match loop 2 (new_node (new_node empty_graph 0) 1) [] [] with (gr, p, e) -> gr in (*acu n fixé à 2 car puits et source sont déjà 1 et 2*)
+  let final_graph = loop 2 (new_node (new_node empty_graph 0) 1) [{id=0;ptitnom="S"};{id=1;ptitnom="P"}] in (*acu n fixé à 2 car puits et source sont déjà 1 et 2*)
 
   close_in infile ;
   final_graph
+
+
+let export2 path graph projets_etudiants =
+  (* Open a write-file. *)
+  let ff = open_out path in
+
+  (* Write in this file. *)
+  fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
+  (* double circle src *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=\"#c7cde2\", color=\"#bec4da\"]; %s;\n" "S";
+  (* double circle dest *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=\"#c7cde2\", color=\"#bec4da\"]; %s;\n" "P" ;
+
+  (* circle *)
+  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
+  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 then
+                   fprintf ff "%s -> %s [ label = \"%s\"];\n" (get_ptitnom id1 projets_etudiants) (get_ptitnom id2 projets_etudiants) (string_of_label lbl)
+                 else  
+                   fprintf ff "");
+
+  fprintf ff "}\n";
+  close_out ff ;
+  ()

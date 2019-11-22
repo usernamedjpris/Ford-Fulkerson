@@ -4,7 +4,7 @@
 open Graph
 
 type path = string
-
+type node = {id: int ; ptitnom: string}
 (* Values are read as strings. *)
 val from_file: path -> string graph
 
@@ -18,4 +18,6 @@ val export: path -> string graph -> Graph.id -> Graph.id -> unit
    https://www-m9.ma.tum.de/graph-algorithms/flow-ford-fulkerson/index_en.html
 *)
 (*import affectations as string graph*)
-val import: path -> Tools.labels graph
+val import: path -> Tools.labels graph * node list 
+
+val export2: path -> Tools.labels graph -> node list -> unit
