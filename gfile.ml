@@ -181,7 +181,7 @@ let import path =
   final_graph
 
 
-let export2 path graph projets_etudiants =
+let export2 path graph projets_etudiants debut fin =
   (* Open a write-file. *)
   let ff = open_out path in
 
@@ -200,5 +200,44 @@ let export2 path graph projets_etudiants =
                    fprintf ff "");
 
   fprintf ff "}\n";
+  close_out ff ;
+  ()
+
+
+let export2_visible path graph projets_etudiants =
+  (* Open a write-file. *)
+  let ff = open_out path in
+
+  (* Write in this file. *)
+  fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
+  (* double circle src *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=\"#c7cde2\", color=\"#bec4da\"]; %s;\n" "S";
+  (* double circle dest *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=\"#c7cde2\", color=\"#bec4da\"]; %s;\n" "P" ;
+
+  (* circle *)
+  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
+  e_iter graph (fun id1 id2 lbl -> fprintf ff "%s -> %s [ label = \"%s\"];\n" (get_ptitnom id1 projets_etudiants) (get_ptitnom id2 projets_etudiants) (string_of_label lbl));
+
+
+  fprintf ff "}\n";
+
+  close_out ff ;
+  ()
+
+let export2_text path graph projets_etudiants debut fin =
+  let ff = open_out path in
+  fprintf ff "  digraph html {
+abc [shape=none, margin=0, label=<
+        <TABLE  CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"4\">
+            <TR BGCOLOR=\"#1B1F24\" >
+                    <TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#9EA2A8\">Student</FONT></TD>
+                    <TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#9EA2A8\">Project</FONT></TD>
+            </TR>";
+  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 && id1 <> debut && id1 <> fin && id2 <> debut && id2 <> fin then 
+                   fprintf ff ("<TR BGCOLOR=\"#EBEBEB\"><TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#75778A\">%s</FONT></TD><TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#75778A\"> %s </FONT></TD></TR>\n") (get_ptitnom id1 projets_etudiants) (get_ptitnom id2 projets_etudiants)
+                 else  
+                   fprintf ff "");
+  fprintf ff "</TABLE>>]}\n";
   close_out ff ;
   ()

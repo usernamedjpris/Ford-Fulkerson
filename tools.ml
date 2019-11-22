@@ -79,7 +79,7 @@ let init_list gr iddebut=
   n_fold gr (fun accu id->if id =iddebut then (iddebut,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
 
 let maj_node_list liste id cost parent marked=
-  ((id, cost,parent,marked) ::  List.filter (fun (i, cost,parent,marked)->(i!=id) ) liste);; (*List.remove_assoc id liste ;; *)
+  ((id, cost,parent,marked) ::  List.filter (fun (i, cost,parent,marked)->(i<>id) ) liste);; (*List.remove_assoc id liste ;; *)
 
 let maj_list_mark liste id =
   let rec loop l id=
@@ -92,7 +92,7 @@ let maj_list_mark liste id =
 let select_node liste =
   let rec loop elected min reste=
     match reste with
-    |[]->if elected != (-1) then elected else raise Not_found
+    |[]->if elected <> (-1) then elected else raise Not_found
     |(id, cost,parent,marked)::r ->if (marked =false && cost <min ) then loop id cost r else loop elected min r
   in
   loop (-1) 9999 liste;;
