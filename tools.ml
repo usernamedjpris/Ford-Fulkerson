@@ -1,4 +1,4 @@
-open Graph
+open Graph 
 (*#use "/mnt/c/Users/FACHE Rémi/Documents/Programmation/ocaml/Ford-Fulkerson/graph.ml" *)
 (*
 let gmap g f = 
