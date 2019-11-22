@@ -29,19 +29,21 @@ type labels =
   { max: int;
     current: int;
     visited: bool;
-    cost: int}
+    cost: int;
+    sign:int}
 type parents=
   {origin:int;
    arc:labels}
 
-let label_of_string s=
+let label_of_string s =
   {max=(int_of_string s);
    current=0;
    visited=false ;
-   cost= 0}                        (*<- /!\ a remplacer avec un sscanf !!!!!!*)
+   cost= 0 ;
+   sign=1}                        (*<- /!\ a remplacer avec un sscanf !!!!!!*)
 
 let string_of_label l=
-  string_of_int(l.current)^"/"^string_of_int(l.max)^"/cost="^string_of_int(l.cost)
+  "["^string_of_int(l.current)^"/"^string_of_int(l.max)^"]("^string_of_int(l.cost)^") A"^string_of_int(l.sign)
 
 (* add_arcs g accu_arcs *)
 (* find arcs to use then add_arcs_labels min accu labels_arcs *)
@@ -57,50 +59,83 @@ let not_visited_node gr id=
     loop out
   with Not_found -> false;;
 
-let rec find_path_ford gr id idfin accu =
-  if id = idfin then accu else (
-    try let out = (out_arcs gr id) in 
-      let rec loop reste =
-        match reste with 
-        |[] -> []
-        |(id2,lab)::r-> if (((lab.max - lab.current) > 0) && (not_visited_node gr id2))  then 
-            let chemin= (find_path_ford (add_arcs_c gr id id2 { lab with visited = true }) id2 idfin ((id,(id2,lab))::accu) ) in
-            match chemin with
-            |[]-> loop r
-            |_->chemin
-          else loop r 
-      in
-      loop out
-    with Not_found -> []);;
+let make_ecart gr =
+  e_fold gr (fun gr id1 id2 lab -> new_arc (new_arc gr id1 id2 {lab with current = lab.max-lab.current}) id2 id1 {lab with sign = -1}) (clone_nodes gr);;
 
-let empty_parent={origin=(-1);arc={max=0;current=0;visited=false;cost=0}}
+(* J'ai essayé de faire de mon mieux avec des labels de partout mais il y a une fatal error que je n'explique pas :(. l'encadrant m'a soufflé l'idée d'implémentation suivante :
+   remarque : il faut faire un graphe d'ecart avec des entiers (comme label)
+        -> faire des find_path dessus
+        -> faire des update dessus : ça consiste à 
+                                        -> réduire le flot résiduel* de maxflow  -> *flot résiduel = flot de l'arc qui pointe dans le sens du chemin trouvé 
+                                        -> augmenter le flot en contresens de maxflow
+        -> à la toute fin : faire une fonction update_graphe_initial qui prend en entrée : le graphe d'ecart et le graphe initial
+                                        -> find arc inversé (id2-> id1) par rapport aux arcs de graphe initial (id1->id2) sur le graphe d'ecart 
+                                        -> pour y lire le flow et le remplacer sur le graphe initial        
+   on peut donc enlever sign de labels*)
+
+let find_path_ford gr id idfin accu =
+  let gre =  make_ecart gr in
+  let rec find_path gra id idfin accu =
+    if id = idfin then accu else (
+      try 
+        let out = (out_arcs gra id) in 
+        let rec loop reste =
+          match reste with 
+          | [] -> []
+          | (id2,lab) :: r -> if ((lab.current > 0) && (not_visited_node gra id2))  then 
+              let () = Printf.printf "%d->%d   %s\n%!" id id2 (string_of_label lab) in
+              let chemin = (find_path (add_arcs_c (add_arcs_c gra id2 id { lab with visited = true } (* pas necessaire normalement*) ) id id2 { lab with visited = true }) id2 idfin ((id,(id2,lab))::accu) ) in
+              match chemin with
+              | [] -> loop r
+              | _ -> chemin
+            else loop r 
+        in
+        loop out
+      with Not_found -> [])
+  in find_path gre id idfin accu 
+
+(*let parcours_larg gr id idfin accu =
+  let gre =  make_ecart gr in
+  let out = (out_arcs gre id) in
+  let rec loop = function 
+    | [] -> []
+    | (id2,lab) :: r -> if (((lab.current>0) && (not_visited_node gre id2)) then 
+            let chemin = (find_path_ford (add_arcs_c gre id id2 { lab with visited = true }) id2 idfin ((id,(id2,lab))::accu) ) in
+            match chemin with
+            | [] -> loop r
+            | _ -> chemin
+          else loop r 
+  in loop out*)
+
+
+let empty_parent={origin=(-1);arc={max=0;current=0;visited=false;cost=0;sign=1}}
 
 let init_list gr iddebut=
   n_fold gr (fun accu id->if id =iddebut then (iddebut,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
 
 let maj_node_list liste id cost parent marked=
-  ((id, cost,parent,marked) ::  List.filter (fun (i, cost,parent,marked)->(i<>id) ) liste);; (*List.remove_assoc id liste ;; *)
+  ((id, cost, parent, marked) ::  List.filter (fun (i, cost, parent, marked)->(i<>id) ) liste);; (*List.remove_assoc id liste ;; *)
 
 let maj_list_mark liste id =
-  let rec loop l id=
+  let rec loop l id =
     match l with
     |[]->raise Not_found
-    |(id1, cost,parent,marked)::r ->if id1 = id then maj_node_list liste id cost parent true else loop r id
+    |(id1, cost,parent,marked)::r -> if id1 = id then maj_node_list liste id cost parent true else loop r id
   in
   loop liste id;;
 
 let select_node liste =
   let rec loop elected min reste=
     match reste with
-    |[]->if elected <> (-1) then elected else raise Not_found
-    |(id, cost,parent,marked)::r ->if (marked =false && cost <min ) then loop id cost r else loop elected min r
+    |[] -> if elected <> (-1) then elected else raise Not_found
+    |(id, cost,parent,marked)::r ->if (marked = false && cost <min ) then loop id cost r else loop elected min r
   in
   loop (-1) 9999 liste;;
 
 let rec get_current_cost liste id=
   match liste with
   |[]-> raise Not_found
-  |(id1, cost,parent,marked)::r-> if id1 = id then cost else get_current_cost r id
+  |(id1, cost, parent, marked)::r-> if id1 = id then cost else get_current_cost r id
 
 
 (* si on veut de meilleures perfs => 
@@ -111,8 +146,8 @@ let rec get_current_cost liste id=
 let reconstitution liste idfin=
   let rec loop l accu idwanted=
     match l with
-    |[]->accu
-    |(id, cost,parent,marked)::r ->
+    |[] -> accu
+    |(id, cost, parent, marked)::r ->
       if id = idwanted then (
         if parent.origin = (-1)  then
           accu
@@ -126,18 +161,19 @@ let reconstitution liste idfin=
 
 (*remplacer find_path par un find_shortest_path_available => dijkstra+check lab.max - lab.current) > 0 *)
 (* via a list of (id,cost, next *)
-let find_path gr iddebut idfin=
+let find_path gr iddebut idfin =
+
   let liste = init_list gr iddebut in 
-  let rec loop0 gr id_courant idfin l=
+  let rec loop0 gr id_courant idfin l =
     if id_courant = idfin then reconstitution l idfin else (
       try let out = (out_arcs gr id_courant) in 
-        let rec loop reste l=
+        let rec loop reste l =
           match reste with 
-          |[]->let new_liste= maj_list_mark l id_courant in
+          |[]->let new_liste = maj_list_mark l id_courant in
             loop0 gr (select_node new_liste) idfin  new_liste
-          |(id2,lab)::r->let cout=(lab.cost+ (get_current_cost l id_courant)) in 
+          |(id2,lab) :: r -> let cout = (lab.cost + (get_current_cost l id_courant)) in 
             if cout < (get_current_cost l id2) && (lab.max - lab.current) >0 then 
-              let new_liste= maj_node_list l id2 cout {origin=id_courant;arc=lab} false in
+              let new_liste = maj_node_list l id2 cout {origin=id_courant;arc=lab} false in
               loop r new_liste
             else
               loop r l
@@ -152,7 +188,7 @@ let update_graphe lemax g path =
     match path with 
     |[] -> gr
     |(id1, (id2, lab))::r ->
-      let new_lab = { lab with current = (lab.current + lemax); visited = false } in
+      let new_lab = { lab with current = (lab.current + lab.sign * lemax) ; visited = false } in
       loop lemax (add_arcs_c gr id1 id2 new_lab ) r
   in
   loop lemax g path
@@ -161,14 +197,20 @@ let rec max_flow res = function
   | [] -> res
   | (id,(id2,lab)) :: lereste -> max_flow (min (lab.max - lab.current) res) lereste
 
+let rec print_path = function 
+  | [] -> Printf.printf "\n%!"
+  | (id,(id2,lab))  :: lereste -> Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab)
+
 let ford_fulkerson gr debut fin =
-  let rec loop gr d f=
+  let rec loop gr d f =
     let chemin = find_path_ford gr d f [] in
+    let () = print_path chemin in                (*debuggage*)
     match chemin with
-    |[]->gr
-    |_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
+    |[] -> gr
+    |_ -> loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
   in
   loop gr debut fin
+
 
 let max_flow_min_cost gr debut fin =
   let rec loop gr d f=

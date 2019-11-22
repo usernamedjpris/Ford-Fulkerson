@@ -12,7 +12,7 @@ p "Auto" 1 "Nouveaux usages du véhicule autonome connecté"
 
 e "RF" "Auto" "Inj"
 e "JG" "Inj" "Auto"
-e "DB" "Auto" "Inj"
+
 
 
 

@@ -21,12 +21,17 @@ let () =
   and _export = Sys.argv.(5)
   in
 
+  let graph = from_file infile in
+  let gr = gmap graph label_of_string in
+  let () = export outfile (gmap (ford_fulkerson gr 0 1) string_of_label) 0 1 in (*final_graph*)
+  ()
+(*
   let (gr, projets_etudiants) = import infile in  (*from_file *) 
   (*let gr = gmap graph label_of_string in *)
   let debut = _source in
   let fin = _sink in
 
-  let final_graph = max_flow_min_cost gr debut fin in
+  let final_graph = ford_fulkerson gr debut fin in
 
   if _export = "--text" then 
 
@@ -38,7 +43,7 @@ let () =
   else  
     let () = export2_visible outfile final_graph projets_etudiants in (*final_graph*)
     ()
-
+*)
 (* let () = export outfile (gmap res string_of_int) in
    ()
 *)
