@@ -44,6 +44,18 @@ val ford_fulkerson :
   labels Graph.graph ->
   Graph.id -> Graph.id ->
   labels Graph.graph
+
+(*à tester ↓*)  
+val ford_fulkerson2 :
+  labels Graph.graph ->
+  Graph.id -> Graph.id ->
+  labels Graph.graph
+  
+val find_deep :
+  labels Graph.graph ->
+  Graph.id -> Graph.id ->
+  (Graph.id * (Graph.id * labels)) list -> (Graph.id * (Graph.id * labels)) list
+ 
 (* 
 val find_path :
   labels Graph.graph ->
