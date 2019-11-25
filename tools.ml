@@ -62,17 +62,6 @@ let not_visited_node gr id=
 let make_ecart gr =
   e_fold gr (fun gr id1 id2 lab -> new_arc (new_arc gr id1 id2 {lab with current = lab.max-lab.current}) id2 id1 {lab with sign = -1}) (clone_nodes gr);;
 
-(* J'ai essayé de faire de mon mieux avec des labels de partout mais il y a une fatal error que je n'explique pas :(. l'encadrant m'a soufflé l'idée d'implémentation suivante :
-   remarque : il faut faire un graphe d'ecart avec des entiers (comme label)
-        -> faire des find_path dessus
-        -> faire des update dessus : ça consiste à 
-                                        -> réduire le flot résiduel* de maxflow  -> *flot résiduel = flot de l'arc qui pointe dans le sens du chemin trouvé 
-                                        -> augmenter le flot en contresens de maxflow
-        -> à la toute fin : faire une fonction update_graphe_initial qui prend en entrée : le graphe d'ecart et le graphe initial
-                                        -> find arc inversé (id2-> id1) par rapport aux arcs de graphe initial (id1->id2) sur le graphe d'ecart 
-                                        -> pour y lire le flow et le remplacer sur le graphe initial        
-   on peut donc enlever sign de labels*)
-
 let find_path_ford gr id idfin accu =
   let gre =  make_ecart gr in
   let rec find_path gra id idfin accu =
@@ -93,6 +82,53 @@ let find_path_ford gr id idfin accu =
         loop out
       with Not_found -> [])
   in find_path gre id idfin accu 
+
+let rec print_path = function 
+  | [] -> Printf.printf "\n%!"
+  | (id,(id2,lab))  :: lereste -> Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab)
+
+let rec max_flow res = function 
+  | [] -> res
+  | (id,(id2,lab)) :: lereste -> max_flow (min (lab.max - lab.current) res) lereste
+
+(* J'ai essayé de faire de mon mieux avec des labels de partout mais il y a une fatal error que je n'explique pas :(. l'encadrant m'a soufflé l'idée d'implémentation suivante :
+   remarque : il faut faire un graphe d'ecart avec des entiers (comme label)
+        -> faire des find_path dessus
+        -> faire des update dessus : ça consiste à 
+                                        -> réduire le flot résiduel* de maxflow  -> *flot résiduel = flot de l'arc qui pointe dans le sens du chemin trouvé 
+                                        -> augmenter le flot en contresens de maxflow
+        -> à la toute fin : faire une fonction update_graphe_initial qui prend en entrée : le graphe d'ecart et le graphe initial
+                                        -> find arc inversé (id2-> id1) par rapport aux arcs de graphe initial (id1->id2) sur le graphe d'ecart 
+                                        -> pour y lire le flow et le remplacer sur le graphe initial        
+   on peut donc enlever sign de labels_____________*)
+
+let update_residu gre path lemax = 
+  let rec loop chem acugraph =
+    match chem with 
+    | [] -> acugraph
+    | (src, (dest, lab)) :: r -> loop r (add_arcs_c (add_arcs_c acugraph src dest {lab with current = lab.current - lemax}) dest src {lab with current = lab.current + lemax})
+  in loop path (clone_nodes gre)
+
+let update_graphe_initial gre gri = 
+  e_fold gri (fun gr src dest lab -> match find_arc gre dest src with 
+      | None -> failwith "residual edge doesn't exist\n" 
+      | Some labe -> add_arcs_c gri src dest labe) (clone_nodes gri)
+
+let ford_fulkerson2 gr debut fin =
+  let gre = make_ecart gr in
+  let rec loop gre d f =
+    let chemin = find_path_ford gr d f [] in
+    let () = print_path chemin in                (*debuggage*)
+    match chemin with
+    |[] -> update_graphe_initial gre gr
+    |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f
+  in
+  loop gre debut fin
+
+(* fin rajout______________________________________*)
+
+
+
 
 (*let parcours_larg gr id idfin accu =
   let gre =  make_ecart gr in
@@ -193,13 +229,6 @@ let update_graphe lemax g path =
   in
   loop lemax g path
 
-let rec max_flow res = function 
-  | [] -> res
-  | (id,(id2,lab)) :: lereste -> max_flow (min (lab.max - lab.current) res) lereste
-
-let rec print_path = function 
-  | [] -> Printf.printf "\n%!"
-  | (id,(id2,lab))  :: lereste -> Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab)
 
 let ford_fulkerson gr debut fin =
   let rec loop gr d f =
