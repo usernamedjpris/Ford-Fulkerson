@@ -14,9 +14,10 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   match find_arc g id1 id2 with
   |None -> new_arc g id1 id2 (lab)
   |Some x -> new_arc g id1 id2 (lab+x);;
-  
+
+  
   (* la fonction new_arc ne crée pas de node, parmi ceux qui lui sont passés (tous via l'accu) elle ajoute des arcs=> on reconstruit le graphe comme ça => si noeud inexistant (ec: empty_graph => raise exception )*)
-  let gmap g f = e_fold g (fun gr id1 id2 lab-> new_arc gr id1 id2 (f lab)) (clone_nodes g);;
+let gmap g f = e_fold g (fun gr id1 id2 lab-> new_arc gr id1 id2 (f lab)) (clone_nodes g);;
   (*
   let res= gmap empty_graph int_of_string;;
  *)
@@ -29,22 +30,26 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   type parents=
   {origin:int;
   arc:labels}
-  
+
+  
   let label_of_string s =
   {max=(int_of_string s);
   current=0;
   visited=false ;
   cost= 0 ;
   sign=1}                        (*<- /!\ a remplacer avec un sscanf !!!!!!*)
-  
+
+  
   let string_of_label l=
   "["^string_of_int(l.current)^"/"^string_of_int(l.max)^"]("^string_of_int(l.cost)^") A"^string_of_int(l.sign)
-  
+
+  
   (* add_arcs g accu_arcs *)
   (* find arcs to use then add_arcs_labels min accu labels_arcs *)
   (* List.reverse à la fin *)
   (*n fold concatene 2 graphs sans les arcs=> add_arcs de n_fold *)
-  
+
+  
   let not_visited_node gr id=
   try let out = (out_arcs gr id) in
   let rec loop reste =
@@ -53,10 +58,12 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   |(id2,lab)::r-> if (lab.visited) then false else loop r in
   loop out
   with Not_found -> false;;
-  
+
+  
   let make_ecart gr =
   e_fold gr (fun gr id1 id2 lab -> new_arc (new_arc gr id1 id2 {lab with current = lab.max-lab.current}) id2 id1 {lab with sign = -1}) (clone_nodes gr);;
-  
+
+  
   let rec find_path_ford gr id idfin accu =
   if id = idfin then accu else (
   try 
@@ -74,15 +81,18 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   loop out
   with Not_found -> [])
   (* let () = Printf.printf "%d->%d   %s\n%!" id id2 (string_of_label lab) in *)
-  
+
+  
   let rec print_path = function 
   | [] -> Printf.printf "\n%!"
   | (id,(id2,lab))  :: lereste -> Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab)
-  
+
+  
   let rec max_flow res = function 
   | [] -> res
   | (id,(id2,lab)) :: lereste -> max_flow (min lab.current res) lereste
-  
+
+  
   (* J'ai essayé de faire de mon mieux avec des labels de partout mais il y a une fatal error que je n'explique pas :(. l'encadrant m'a soufflé l'idée d'implémentation suivante :
   remarque : il faut faire un graphe d'ecart avec des entiers (comme label)
   -> faire des find_path dessus
@@ -93,7 +103,8 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   -> find arc inversé (id2-> id1) par rapport aux arcs de graphe initial (id1->id2) sur le graphe d'ecart 
   -> pour y lire le flow et le remplacer sur le graphe initial        
   on peut donc enlever sign de labels_____________*)
-  
+
+  
   let update_residu gre path lemax = 
   let rec loop chem acugraph =
   match chem with 
@@ -106,14 +117,17 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   let graphe_plus = (new_arc graphe_moins dest src {lab_inv with current = lab_inv.current + lemax}) in
   loop r graphe_plus
   in loop path gre
-  
+
+  
   let update_graphe_initial gre gri = 
   e_fold gri (fun gr src dest lab -> 
   match find_arc gre dest src with 
   | None -> raise Not_found
   | Some lab_inv -> new_arc gr src dest lab_inv) (clone_nodes gri)
-    
-  
+
+    
+
+  
   let ford_fulkerson2 gr debut fin =
   let gre = make_ecart gr in
   let rec loop gre d f =
@@ -124,7 +138,8 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f
   in
   loop gre debut fin
-  
+
+  
   (* fin rajout______________________________________*)
   (* Tests *)
   let arc={max=1;current=0;visited=false;cost=0;sign=1};;
@@ -142,7 +157,8 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   updated;;
   let chemin= find_path_ford updated 1 4 [];;
   let full= ford_fulkerson2 graphe_reverse_need  1 4;;
-                            
+
+                            
   (*let parcours_larg gr id idfin accu =
   let gre =  make_ecart gr in
   let out = (out_arcs gre id) in
@@ -155,16 +171,21 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   | _ -> chemin
   else loop r 
   in loop out*)
-                                           
-                                           
+
+                                           
+
+                                           
   let empty_parent={origin=(-1);arc={max=0;current=0;visited=false;cost=0;sign=1}}
-                            
+
+                            
   let init_list gr iddebut=
   n_fold gr (fun accu id->if id =iddebut then (iddebut,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
-                            
+
+                            
   let maj_node_list liste id cost parent marked=
   ((id, cost, parent, marked) ::  List.filter (fun (i, cost, parent, marked)->(i<>id) ) liste);; (*List.remove_assoc id liste ;; *)
-                                
+
+                                
   let maj_list_mark liste id =
   let rec loop l id =
   match l with
@@ -172,7 +193,8 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   |(id1, cost,parent,marked)::r -> if id1 = id then maj_node_list liste id cost parent true else loop r id
   in
   loop liste id;;
-                                
+
+                                
   let select_node liste =
   let rec loop elected min reste=
   match reste with
@@ -180,13 +202,16 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   |(id, cost,parent,marked)::r ->if (marked = false && cost <min ) then loop id cost r else loop elected min r
   in
   loop (-1) 9999 liste;;
-                                                                                             
+
+                                                                                             
   let rec get_current_cost liste id=
   match liste with
   |[]-> raise Not_found
   |(id1, cost, parent, marked)::r-> if id1 = id then cost else get_current_cost r id
-                          
-                          
+
+                          
+
+                          
   (* si on veut de meilleures perfs => 
   1)remplacer la liste par un Array (mutable) => évite de faire des parcours de liste pour trouver chq element
   la correspondance id node, index tableau étant instantanée,
@@ -206,12 +231,15 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   loop r accu idwanted
   in
   loop liste [] idfin
-                            
-                            
+
+                            
+
+                            
   (*remplacer find_path par un find_shortest_path_available => dijkstra+check lab.max - lab.current) > 0 *)
   (* via a list of (id,cost, next *)
   let find_path gr iddebut idfin =
-                                  
+
+                                  
   let liste = init_list gr iddebut in 
   let rec loop0 gr id_courant idfin l =
   if id_courant = idfin then reconstitution l idfin else (
@@ -231,7 +259,8 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   with Not_found -> [])
   in
   loop0 gr iddebut idfin liste
-                                
+
+                                
   let update_graphe lemax g path =
   let rec loop lemax gr path =
   match path with 
@@ -241,8 +270,10 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   loop lemax (add_arcs_c gr id1 id2 new_lab ) r
   in
   loop lemax g path
-                            
-                                
+
+                            
+
+                                
   let ford_fulkerson gr debut fin =
   let rec loop gr d f =
   let chemin = find_path_ford gr d f [] in
@@ -252,8 +283,10 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   |_ -> loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
   in
   loop gr debut fin
-                                
-                                  
+
+                                
+
+                                  
   let max_flow_min_cost gr debut fin =
   let rec loop gr d f=
   let chemin = find_path gr d f in
@@ -262,9 +295,11 @@ let clone_nodes g = n_fold g new_node empty_graph;;
   |_->loop (update_graphe (max_flow 9999 chemin) gr chemin) d f
   in
   loop gr debut fin;;
-                          
+
+                          
   (*let res = find_path ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 1 4 [];;*)
-                          
+
+                          
   (*
   let majed=maj_node_list (init_list ((1,(2,(20,0)) :: (4,(10,0)) :: [] ) :: (2,(4,(20,0)) :: [] ) :: (3,(4,(20,0)) :: [] ) :: (4,(1,(20,0)) :: [] ) :: []) 0) 4 42 {origin=3; arc = {max=25;current=0;visited=false;cost=10}} true;;
   majed;;
