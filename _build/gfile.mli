@@ -20,4 +20,8 @@ val export: path -> string graph -> Graph.id -> Graph.id -> unit
 (*import affectations as string graph*)
 val import: path -> Tools.labels graph * node list 
 
-val export2: path -> Tools.labels graph -> node list -> unit
+val export2: path -> Tools.labels graph -> node list -> int -> int -> unit
+
+val export2_visible: path -> Tools.labels graph -> node list -> unit
+
+val export2_text: path -> Tools.labels graph -> node list -> int -> int -> unit

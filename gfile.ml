@@ -125,7 +125,7 @@ let rec get_ptitnom i = function
 
 (* Reads a line with a project. retourne la liste projects mise a jour*)
 let read_projet id graph line projects =
-  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax _ -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0 ; sign = 1}) ,
+  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax _ -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0 }) ,
                                                              {id = id; ptitnom = ptitnom} :: projects) (*puits id=1*)
   with e ->
     Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
@@ -138,7 +138,7 @@ let read_etudiant id gr line projects_etudiants =
       let rec search str_proj = function
         |[] -> failwith "Projet non défini"
         |proj :: r -> if proj.ptitnom = str_proj then proj.id else search str_proj r
-      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0 ; sign = 1}  (*source -> etudiant*)) id (search str_proj2 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 1 ; sign = 1}) id (search str_proj1 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 0 ; sign = 1} , 
+      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0}  (*source -> etudiant*)) id (search str_proj2 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 1 }) id (search str_proj1 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 0 } , 
          {id = id ; ptitnom = initiales} :: projects_etudiants)
   with e ->
     Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;

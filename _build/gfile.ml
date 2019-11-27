@@ -125,7 +125,7 @@ let rec get_ptitnom i = function
 
 (* Reads a line with a project. retourne la liste projects mise a jour*)
 let read_projet id graph line projects =
-  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax _ -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0}) ,
+  try Scanf.sscanf line "p %s %d %s" (fun ptitnom nbmax _ -> (new_arc (new_node graph id) id 1 {max = nbmax ; current = 0 ; visited = false ; cost = 0 }) ,
                                                              {id = id; ptitnom = ptitnom} :: projects) (*puits id=1*)
   with e ->
     Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
@@ -138,7 +138,7 @@ let read_etudiant id gr line projects_etudiants =
       let rec search str_proj = function
         |[] -> failwith "Projet non défini"
         |proj :: r -> if proj.ptitnom = str_proj then proj.id else search str_proj r
-      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0}  (*source -> etudiant*)) id (search str_proj2 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 1}) id (search str_proj1 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 0} , 
+      in new_arc (new_arc (new_arc graph 0 id {max = 1 ; current = 0 ; visited = false ; cost = 0}  (*source -> etudiant*)) id (search str_proj2 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 1 }) id (search str_proj1 projects_etudiants) {max = 1 ; current = 0 ; visited = false ; cost = 0 } , 
          {id = id ; ptitnom = initiales} :: projects_etudiants)
   with e ->
     Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
@@ -181,7 +181,7 @@ let import path =
   final_graph
 
 
-let export2 path graph projets_etudiants =
+let export2 path graph projets_etudiants debut fin =
   (* Open a write-file. *)
   let ff = open_out path in
 
@@ -200,5 +200,44 @@ let export2 path graph projets_etudiants =
                    fprintf ff "");
 
   fprintf ff "}\n";
+  close_out ff ;
+  ()
+
+
+let export2_visible path graph projets_etudiants =
+  (* Open a write-file. *)
+  let ff = open_out path in
+
+  (* Write in this file. *)
+  fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
+  (* double circle src *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=\"#c7cde2\", color=\"#bec4da\"]; %s;\n" "S";
+  (* double circle dest *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=\"#c7cde2\", color=\"#bec4da\"]; %s;\n" "P" ;
+
+  (* circle *)
+  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
+  e_iter graph (fun id1 id2 lbl -> fprintf ff "%s -> %s [ label = \"%s\"];\n" (get_ptitnom id1 projets_etudiants) (get_ptitnom id2 projets_etudiants) (string_of_label lbl));
+
+
+  fprintf ff "}\n";
+
+  close_out ff ;
+  ()
+
+let export2_text path graph projets_etudiants debut fin =
+  let ff = open_out path in
+  fprintf ff "  digraph html {
+abc [shape=none, margin=0, label=<
+        <TABLE  CELLBORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"4\">
+            <TR BGCOLOR=\"#1B1F24\" >
+                    <TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#9EA2A8\">Student</FONT></TD>
+                    <TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#9EA2A8\">Project</FONT></TD>
+            </TR>";
+  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 && id1 <> debut && id1 <> fin && id2 <> debut && id2 <> fin then 
+                   fprintf ff ("<TR BGCOLOR=\"#EBEBEB\"><TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#75778A\">%s</FONT></TD><TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#75778A\"> %s </FONT></TD></TR>\n") (get_ptitnom id1 projets_etudiants) (get_ptitnom id2 projets_etudiants)
+                 else  
+                   fprintf ff "");
+  fprintf ff "</TABLE>>]}\n";
   close_out ff ;
   ()

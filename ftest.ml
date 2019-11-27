@@ -32,7 +32,7 @@ let () =
     let debut = _source in
     let fin = _sink in
 
-    let final_graph = ford_fulkerson2 gr debut fin in
+    let final_graph = max_flow_min_cost gr debut fin in
     if _export = "--text" then 
       let () = export2_text outfile final_graph projets_etudiants 0 1 in (*final_graph*)
       ()
