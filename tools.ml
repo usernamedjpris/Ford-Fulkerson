@@ -93,7 +93,7 @@ let update_residu gre path lemax =
             match arc_inverse with
               |None -> raise Not_found
               |Some lab_inv ->
-                  let graphe_moins=(new_arc acugraph src dest {lab with current = lab.current - lemax}) in
+                  let graphe_moins = (new_arc acugraph src dest {lab with current = lab.current - lemax}) in
                   let graphe_plus = (new_arc graphe_moins dest src {lab_inv with current = lab_inv.current + lemax}) in
                     loop r graphe_plus
   in loop path gre
@@ -112,6 +112,19 @@ let ford_fulkerson2 gr debut fin =
   let gre = make_ecart gr in
   let rec loop gre d f =
     let chemin = find_path_ford gre d f [] in
+      match chemin with
+        |[] -> update_graphe_initial gre gr
+        |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f
+  in
+    loop gre debut fin
+
+
+
+let ford_fulkerson2_verbose gr debut fin =
+  let gre = make_ecart gr in
+  let rec loop gre d f =
+    let chemin = find_path_ford gre d f [] in
+    let () = print_path chemin in 
       match chemin with
         |[] -> update_graphe_initial gre gr
         |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f
@@ -219,6 +232,18 @@ let max_flow_min_cost gr debut fin =
   in
     loop gre debut fin
 
+
+let max_flow_min_cost_verbose gr debut fin =
+  let gre = make_ecart gr in
+  let rec loop gre d f =
+    let chemin = find_path gre d f in
+    let () = "\n"^print_path chemin in 
+      match chemin with
+        |[] -> update_graphe_initial gre gr   (*to get the final graph *)
+        |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f
+  in
+    loop gre debut fin
+    
 (* Tests *)
 (*
 let arc={max=1;current=0;visited=false;cost=0};;

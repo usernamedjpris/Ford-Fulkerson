@@ -3,19 +3,15 @@ open Printf
 open Tools
 type path = string
 
-(* Format of text files:
+(* Format of Gfiles:
    % This is a comment
-
    % A node with its coordinates (which are not used).
    n 88.8 209.7
    n 408.9 183.0
-
    % The first node has id 0, the next is 1, and so on.
-
    % Edges: e source dest label
    e 3 1 11
    e 0 2 8
-
 *)
 
 let write_file path graph =
@@ -95,32 +91,42 @@ let from_file path =
   final_graph
 
 
-let export path graph debut fin=
+let export_visible path graph debut fin =
   (* Open a write-file. *)
   let ff = open_out path in
-
   (* Write in this file. *)
   fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
   (* double circle src *)
-  fprintf ff "node [shape = doublecircle, fillcolor=blue]; LR_%d;\n" debut;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; #%d;\n" debut;
   (* double circle dest *)
-  fprintf ff "node [shape = doublecircle, fillcolor=red]; LR_%d;\n" fin ;
-
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; #%d;\n" fin ;
   (* double circle src *)
-  fprintf ff "node [shape = circle];\n" ;
-  e_iter graph (fun id1 id2 lbl -> fprintf ff "LR_%d -> LR_%d [ label = \"%s\"];\n" id1 id2 lbl) ;
-
+  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n];\n" ;
+  e_iter graph (fun id1 id2 lbl -> fprintf ff "#%d -> #%d [ label = \"%s\"];\n" id1 id2 lbl) ;
   fprintf ff "}\n";
   close_out ff ;
   ()
 
-
+let export_simplified path graph debut fin =
+  (* Open a write-file. *)
+  let ff = open_out path in
+  (* Write in this file. *)
+  fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n  size=\"8,5\";\n" ;
+  (* double circle src *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; #%d;\n" debut;
+  (* double circle dest *)
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; #%d;\n" fin ;
+  (* double circle src *)
+  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
+  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 then fprintf ff "#%d -> #%d [ label = \"%s\"];\n" id1 id2 lbl else fprintf ff "");) ;
+  fprintf ff "}\n";
+  close_out ff ;
+  ()
 
 type node = {id: int ; ptitnom: string}
 
-
 let rec get_ptitnom i = function
-  | []->"DF"
+  | [] -> "DF"
   | e :: r -> if e.id = i then e.ptitnom else get_ptitnom i r 
 
 (* Reads a line with a project. retourne la liste projects mise a jour*)
@@ -181,7 +187,7 @@ let import path =
   final_graph
 
 
-let export2 path graph projets_etudiants debut fin =
+let export2_simplified path graph projets_etudiants =
   (* Open a write-file. *)
   let ff = open_out path in
 
@@ -225,7 +231,7 @@ let export2_visible path graph projets_etudiants =
   close_out ff ;
   ()
 
-let export2_text path graph projets_etudiants debut fin =
+let export2_text path graph projets_etudiants =
   let ff = open_out path in
   fprintf ff "  digraph html {
 abc [shape=none, margin=0, label=<

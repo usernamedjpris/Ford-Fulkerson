@@ -20,34 +20,71 @@ let () =
   if _import = "--fromGfile" then 
     let graph = from_file infile in
     let gr = gmap graph label_of_string in
+
     if  _algo = "fordF" then
-      let final_graph = ford_fulkerson2 gr 0 1 in
+      let final_graph = ford_fulkerson2 gr _source _sink in
       if _export = "--easygraph" then
-        let () = export outfile (gmap final_graph string_of_label) 0 1 in ()
+        let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
       else  if _export = "--visible"
-        let () = export_visible outfile (gmap final_graph string_of_label) 0 1 in ()
-    else if _algo = "minFmaxC" then
-      let final_graph = max_flow_min_cost gr 0 1 in
+        let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
+
+    else if _algo = "fordFverbose" then
+      let final_graph = ford_fulkerson2_verbose gr _source _sink in
       if _export = "--easygraph" then
-        let () = export outfile (gmap final_graph string_of_label) 0 1 in ()
+        let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
       else  if _export = "--visible"
-        let () = export_visible outfile (gmap final_graph string_of_label) 0 1 in ()
+        let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
+
+    else if _algo = "maxFminC" then
+      let final_graph = max_flow_min_cost gr _source _sink in
+      if _export = "--easygraph" then
+        let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
+      else  if _export = "--visible"
+        let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
+
+    else if _algo = "maxFminCverbose" then
+      let final_graph = max_flow_min_cost_verbose gr _source _sink in
+      if _export = "--easygraph" then
+        let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
+      else  if _export = "--visible"
+        let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
+
   else
   if _import = "fromaffect" then 
-    let (gr, projets_etudiants) = import infile in  
+    let (gr, projets_etudiants) = import infile in 
+
     if  _algo = "fordF" then
       let final_graph = ford_fulkerson2 gr 0 1 in
       if _export = "--text" then 
-        let () = export2_text outfile final_graph projets_etudiants 0 1 in ()
+        let () = export2_text outfile final_graph projets_etudiants in ()
       else if _export = "--easygraph" then
-        let () = export2 outfile final_graph projets_etudiants 0 1 in ()
+        let () = export2_simplified outfile final_graph projets_etudiants in ()
       else  if _export = "--visible"
         let () = export2_visible outfile final_graph projets_etudiants in ()
+
+    else if _algo = "fordFverbose" then
+      let final_graph = ford_fulkerson2_verbose gr 0 1 in
+      if _export = "--text" then 
+        let () = export2_text outfile final_graph projets_etudiants in ()
+      else if _export = "--easygraph" then
+        let () = export2_simplified outfile final_graph projets_etudiants in ()
+      else  if _export = "--visible"
+        let () = export2_visible outfile final_graph projets_etudiants in ()
+
     else if _algo = "minFmaxC" then
       let final_graph = max_flow_min_cost gr 0 1 in
       if _export = "--text" then 
-        let () = export2_text outfile final_graph projets_etudiants 0 1 in ()
+        let () = export2_text outfile final_graph projets_etudiants in ()
       else if _export = "--easygraph" then
-        let () = export2 outfile final_graph projets_etudiants 0 1 in ()
+        let () = export2_simplified outfile final_graph projets_etudiants in ()
+      else  if _export = "--visible"
+        let () = export2_visible outfile final_graph projets_etudiants in ()
+
+    else if _algo = "minFmaxCverbose" then
+      let final_graph = max_flow_min_cost_verbose gr 0 1 in
+      if _export = "--text" then 
+        let () = export2_text outfile final_graph projets_etudiants in ()
+      else if _export = "--easygraph" then
+        let () = export2_simplified outfile final_graph projets_etudiants in ()
       else  if _export = "--visible"
         let () = export2_visible outfile final_graph projets_etudiants in ()
