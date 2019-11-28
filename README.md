@@ -5,7 +5,7 @@
 #### VSCodium
 ##### Compilation
 ``` 
-CTRL + ALT + B      
+CTRL + SHIFT + B      
 ``` 
 ##### Exécution
 ``` 
@@ -21,19 +21,25 @@ CTRL + ALT + B
 ######     --option_algo :
 ```
 --fordF            // algorithme de Ford-Fulkerson 
+```
+```
+--fordFverbose     // algorithme de Ford-Fulkerson avec affichage des chemins empruntés
 ``` 
 ```
 --minFmaxC         // algorithme de min-flow max-cost
 ``` 
+```
+--minFmaxCverbose  // algorithme de min-flow max-cost avec affichage des chemins empruntés
+``` 
 ######     --option_export :
 ```
---text             // tableau du résultat
-``` 
+--visible          // graphe représentant chaque arc et labels
+```
 ```
 --easygraph        // graphe épuré
 ``` 
 ```
---visible          // graphe représentant chaque arc et labels
+--text             // tableau du résultat d'affectation (disponible qu'avec --fromaffect)
 ``` 
 ##### transfert GV file → SVG file
 ``` 
@@ -45,17 +51,17 @@ dot -Tsvg graph.gv > graph.svg
 ```
 ### Exemples 
 #### Test de **Ford-Fulkerson** avec chemin empruntant un arc retour du graphe d'écart
-`./ftest exemples/graphe_1 src dest exemples/graphe1.gv --fromGfile --fordF --visible` </br>
+`./ftest exemples/graph_1 src dest exemples/graph1.gv --fromGfile --fordF --visible` </br>
 `dot -Tsvg exemples/graph_1.gv > exemples/graph1.svg` 
 #### Test de **Ford-Fulkerson** sur un petit graphe d'affectation 
-`./ftest exemples/graphe_2.txt src dest exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
-`dot -Tsvg exemples/graph_2.gv > exemples/graph_2.svg` 
+`./ftest exemples/graph_2 src dest exemples/graph_2fF.gv --fromaffect --fordF --easygraph` </br>
+`dot -Tsvg exemples/graph_2fF.gv > exemples/graph_2fF.svg` 
 #### Test de **MaxFlow-MinCost** sur le même petit graphe d'affectation (prise en compte de l'ordre des voeux)
-`./ftest exemples/graphe_3.txt src dest exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
-`dot -Tsvg exemples/graph_3.gv > exemples/graph_3.svg` 
+`./ftest exemples/graph_2 src dest exemples/graph_2mFmC.gv --fromaffect --maxFminC --text` </br>
+`dot -Tsvg exemples/graph_2mFmC.gv > exemples/graph_2mFmC.svg` 
 #### Test de **MaxFlow-MinCost** sur un plus grand graphe d'affectation
-`./ftest exemples/graphe_4.txt src dest exemples/graphe_4.gv --fromaffect --maxFminC --text` </br>
-`dot -Tsvg exemples/graph_4.gv > exemples/graph_4.svg` 
+`./ftest exemples/graph_3 src dest exemples/graph_3.gv --fromaffect --maxFminC --text` </br>
+`dot -Tsvg exemples/graph_3.gv > exemples/graph_3.svg` 
 ## Choix d'implémentation
 ### Implémentation du graphe
 #### arcs_out
@@ -121,5 +127,5 @@ L'émission d'un vœu d'un étudiant aux initiales `TB` pour les projets `projet
 ```
 e TB projet1 projet2
 ```
-voir un [exemple](exemples/graph_2.txt)
+voir un [exemple](exemples/graph_2)
 

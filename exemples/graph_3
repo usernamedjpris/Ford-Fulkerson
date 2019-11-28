@@ -1,0 +1,36 @@
+%% Projets ______________ p "ptitnom" nbplacemax "nom complet"
+
+
+p "Inj" 3 "Injections dans les programmes"  
+p "BIM" 2 "Du BIM à la réalité virtuelle interactive"
+p "Eco" 2 "De l’écologie dans la création d’objets connectés"
+p "Secu" 2 "Jeunesse et sensibilisation à la sécurité"
+p "IA" 2 "Méthode arborescente vs Apprentissage  - Cas de l'IA d'un jeu"
+p "Nucl" 2 "Surveillance de robots industriels soumis à des rayonnements nucléaires"
+p "Deep" 3 "Deep Fake"
+p "Auto" 2 "Nouveaux usages du véhicule autonome connecté"
+p "EDT" 2 "Un bon emploi du temps"
+p "SHM" 2 "SHM-based composite structural damage prognostic"
+p "Rico" 2 "Ricochet Robot"
+p "Prop" 2 "Modélisation de la chaîne de propulsion de véhicules électriques"
+p "Opt" 2 "Optmisation du profil de commande d'un inverseur de poussée"
+
+
+
+%% Etudiants ____________ e "Initiales" "projet1" "projet2"
+
+
+e "RF" "Auto" "Inj"
+e "JG" "Inj" "Opt"
+e "DL" "Deep" "Auto"
+e "AB" "SHM" "Prop"
+e "ER" "Rico" "Auto"
+e "BB" "Auto" "Opt"
+e "TR" "Inj" "Prop"
+e "ML" "Inj" "Auto"
+e "PL" "Rico" "Deep"
+e "AT" "SHM" "Prop"
+e "EH" "Rico" "Auto"
+e "BC" "Auto" "Opt"
+e "PO" "Inj" "Prop"
+e "KM" "Inj" "Opt"
