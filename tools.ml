@@ -237,7 +237,7 @@ let max_flow_min_cost_verbose gr debut fin =
   let gre = make_ecart gr in
   let rec loop gre d f =
     let chemin = find_path gre d f in
-    let () = "\n"^print_path chemin in 
+    print_path chemin;
       match chemin with
         |[] -> update_graphe_initial gre gr   (*to get the final graph *)
         |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f

@@ -24,29 +24,29 @@ let () =
     if  _algo = "fordF" then
       let final_graph = ford_fulkerson2 gr _source _sink in
       if _export = "--easygraph" then
-        let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
-      else  if _export = "--visible"
+        let () = export_simplified outfile final_graph _source _sink in ()
+      else  if _export = "--visible" then
         let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
 
     else if _algo = "fordFverbose" then
       let final_graph = ford_fulkerson2_verbose gr _source _sink in
       if _export = "--easygraph" then
         let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
 
     else if _algo = "maxFminC" then
       let final_graph = max_flow_min_cost gr _source _sink in
       if _export = "--easygraph" then
         let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
 
     else if _algo = "maxFminCverbose" then
       let final_graph = max_flow_min_cost_verbose gr _source _sink in
       if _export = "--easygraph" then
         let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
 
   else
@@ -59,7 +59,7 @@ let () =
         let () = export2_text outfile final_graph projets_etudiants in ()
       else if _export = "--easygraph" then
         let () = export2_simplified outfile final_graph projets_etudiants in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export2_visible outfile final_graph projets_etudiants in ()
 
     else if _algo = "fordFverbose" then
@@ -68,7 +68,7 @@ let () =
         let () = export2_text outfile final_graph projets_etudiants in ()
       else if _export = "--easygraph" then
         let () = export2_simplified outfile final_graph projets_etudiants in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export2_visible outfile final_graph projets_etudiants in ()
 
     else if _algo = "minFmaxC" then
@@ -77,7 +77,7 @@ let () =
         let () = export2_text outfile final_graph projets_etudiants in ()
       else if _export = "--easygraph" then
         let () = export2_simplified outfile final_graph projets_etudiants in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export2_visible outfile final_graph projets_etudiants in ()
 
     else if _algo = "minFmaxCverbose" then
@@ -86,5 +86,5 @@ let () =
         let () = export2_text outfile final_graph projets_etudiants in ()
       else if _export = "--easygraph" then
         let () = export2_simplified outfile final_graph projets_etudiants in ()
-      else  if _export = "--visible"
+      else  if _export = "--visible" then
         let () = export2_visible outfile final_graph projets_etudiants in ()
