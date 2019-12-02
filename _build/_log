@@ -16,11 +16,11 @@ ocamlc.opt -c -o gfile.cmi gfile.mli # cached
 # Target: ftest.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ftest.cmo, file:ftest.ml, implem, ocaml, quiet }
 ocamlc.opt -c -o ftest.cmo ftest.ml
 + ocamlc.opt -c -o ftest.cmo ftest.ml
-File "ftest.ml", line 29, characters 40-51:
-29 |         let () = export_visible outfile final_graph _source _sink in ()
-                                             ^^^^^^^^^^^
-Error: This expression has type Tools.labels Graph.graph
-       but an expression was expected of type string Graph.graph
-       Type Tools.labels is not compatible with type string 
+File "ftest.ml", line 34, characters 43-77:
+34 |         let () = export_simplified outfile (gmap final_graph string_of_label) _source _sink in ()
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Error: This expression has type string Graph.graph
+       but an expression was expected of type Tools.labels Graph.graph
+       Type string is not compatible with type Tools.labels 
 Command exited with code 2.
 # Compilation unsuccessful.
