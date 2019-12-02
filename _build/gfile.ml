@@ -97,12 +97,12 @@ let export_visible path graph debut fin =
   (* Write in this file. *)
   fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n	size=\"8,5\";\n" ;
   (* double circle src *)
-  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; #%d;\n" debut;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; %d;\n" debut;
   (* double circle dest *)
-  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; #%d;\n" fin ;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; %d;\n" fin ;
   (* double circle src *)
-  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n];\n" ;
-  e_iter graph (fun id1 id2 lbl -> fprintf ff "#%d -> #%d [ label = \"%s\"];\n" id1 id2 lbl) ;
+  fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
+  e_iter graph (fun id1 id2 lbl -> fprintf ff "%d -> %d [ label = \"%s\"];\n" id1 id2 lbl) ;
   fprintf ff "}\n";
   close_out ff ;
   ()
@@ -113,12 +113,12 @@ let export_simplified path graph debut fin =
   (* Write in this file. *)
   fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n  size=\"8,5\";\n" ;
   (* double circle src *)
-  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; #%d;\n" debut;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; _%d;\n" debut;
   (* double circle dest *)
-  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; #%d;\n" fin ;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; _%d;\n" fin ;
   (* double circle src *)
   fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
-  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 then fprintf ff "#%d -> #%d [ label = \"%s\"];\n" id1 id2 (string_of_label lbl) else fprintf ff "");
+  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 then fprintf ff "_%d -> _%d [ label = \"%s\"];\n" id1 id2 (string_of_label lbl) else fprintf ff "");
   fprintf ff "}\n";
   close_out ff ;
   ()
@@ -231,7 +231,7 @@ let export2_visible path graph projets_etudiants =
   close_out ff ;
   ()
 
-let export2_text path graph projets_etudiants debut fin =
+let export2_text path graph projets_etudiants =
   let ff = open_out path in
   fprintf ff "  digraph html {
 abc [shape=none, margin=0, label=<
@@ -240,7 +240,7 @@ abc [shape=none, margin=0, label=<
                     <TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#9EA2A8\">Student</FONT></TD>
                     <TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#9EA2A8\">Project</FONT></TD>
             </TR>";
-  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 && id1 <> debut && id1 <> fin && id2 <> debut && id2 <> fin then 
+  e_iter graph (fun id1 id2 lbl -> if lbl.current>0 && id1 <> 0 && id1 <> 1 && id2 <> 0 && id2 <> 1 then 
                    fprintf ff ("<TR BGCOLOR=\"#EBEBEB\"><TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#75778A\">%s</FONT></TD><TD BORDER=\"1px solid #d4d4d4\"><FONT COLOR=\"#75778A\"> %s </FONT></TD></TR>\n") (get_ptitnom id1 projets_etudiants) (get_ptitnom id2 projets_etudiants)
                  else  
                    fprintf ff "");
