@@ -1,14 +1,6 @@
 open Graph 
 open Tools
-
-let not_visited_node gr id=
-  try let out = (out_arcs gr id) in
-    let rec loop reste =
-      match reste with 
-        |[] -> true
-        |(id2,lab)::r-> if (lab.visited) then false else loop r in
-      loop out
-  with Not_found -> false;;
+open Ford 
   
 let init_list gr iddebut=
   n_fold gr (fun accu id->if id =iddebut then (iddebut,0,empty_parent,false)::accu else (id,9999,empty_parent,false)::accu) []
@@ -65,33 +57,6 @@ let reconstitution liste idfin=
             loop r accu idwanted
   in
     loop liste [] idfin
-
-let update_graphe_initial gre gri = 
-  e_fold gri (fun gr src dest lab -> 
-               match find_arc gre dest src with 
-                 | None -> raise Not_found
-                 | Some lab_inv -> new_arc gr src dest lab_inv) (clone_nodes gri)
-                 
-let update_residu gre path lemax = 
-  let rec loop chem acugraph =
-    match chem with 
-      | [] -> acugraph
-      | (src, (dest, lab)) :: r -> let arc_inverse = find_arc gre dest src in 
-            match arc_inverse with
-              |None -> raise Not_found
-              |Some lab_inv ->
-                  let graphe_moins = (new_arc acugraph src dest {lab with current = lab.current - lemax}) in
-                  let graphe_plus = (new_arc graphe_moins dest src {lab_inv with current = lab_inv.current + lemax}) in
-                    loop r graphe_plus
-  in loop path gre
-
-let rec max_flow res = function 
-  | [] -> res
-  | (id,(id2,lab)) :: lereste -> max_flow (min lab.current res) lereste
-  
-let rec print_path = function 
-    | [] -> Printf.printf "\n%!"
-  | (id,(id2,lab))  :: lereste -> Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab)
 
 
 let find_path gr iddebut idfin =

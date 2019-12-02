@@ -1,5 +1,6 @@
 open Graph
 open Tools
+open Ford 
 
 val init_list : 'a Graph.graph -> Graph.id -> (int * int * parents * bool) list
 val maj_node_list :
@@ -17,8 +18,7 @@ val find_path :
   labels Graph.graph ->
   Graph.id -> Graph.id -> (int * (Graph.id * labels)) list
 
-val not_visited_node : labels Graph.graph -> int -> bool
-val max_flow : int -> ('a * ('b * labels)) list -> int  
+ 
 
 val max_flow_min_cost :
   labels Graph.graph ->
