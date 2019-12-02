@@ -2,23 +2,27 @@
 
 ## Guide d'utilisation sous Linux
 ### Commandes générales
-#### VSCodium
-##### Compilation
+#### Compilation
 ``` 
-CTRL + ALT + B      
+rm -f *.cmi *.cmo ftest    
 ``` 
-##### Exécution
 ``` 
-./ftest graphe.txt src dest graphe.gv --option_import --option_algo --option_export     
+ocamlbuild ftest.native   
 ``` 
-######     --option_import :
+#### Exécution
+``` 
+./ftest graphIN [src] [dest] graphOUT.gv [option_import] [option_algo] [option_export]     
+``` 
+#####     [src] [dest] :
+entiers.  <i>  Non pris en compte pour option_import = fromaffect</i>
+#####     [option_import] :
 ```
 --fromGfile        // ouvrir un fichier graph 
 ``` 
 ```
 --fromaffect       // ouvrir un fichier d'affectation
 ``` 
-######     --option_algo :
+#####     [option_algo] :
 ```
 --fordF            // algorithme de Ford-Fulkerson 
 ```
@@ -31,7 +35,7 @@ CTRL + ALT + B
 ```
 --minFmaxCverbose  // algorithme de min-flow max-cost avec affichage des chemins empruntés
 ``` 
-######     --option_export :
+#####     [option_export] :
 ```
 --visible          // graphe représentant chaque arc et labels
 ```
@@ -41,61 +45,34 @@ CTRL + ALT + B
 ```
 --text             // tableau du résultat d'affectation (disponible qu'avec --fromaffect)
 ``` 
-##### transfert GV file → SVG file
+#### transfert GV file → SVG file
 ``` 
 dot -Tsvg graph.gv > graph.svg                                                               
 ``` 
-#### ocamlbuild
-```
-à remplir 
-```
+
 ### Exemples 
 #### Test de **Ford-Fulkerson** avec chemin empruntant un arc retour du graphe d'écart
-`./ftest exemples/graphe_1 src dest exemples/graphe1.gv --fromGfile --fordF --visible` </br>
+`./ftest.native exemples/graphe_1 0 1 exemples/graphe1.gv --fromGfile --fordFverbose --visible` </br>
 `dot -Tsvg exemples/graph_1.gv > exemples/graph1.svg` 
 #### Test de **Ford-Fulkerson** sur un petit graphe d'affectation 
-`./ftest exemples/graphe_2.txt src dest exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
+`./ftest.native exemples/graphe_2.txt 0 1 exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
 `dot -Tsvg exemples/graph_2.gv > exemples/graph_2.svg` 
 #### Test de **MaxFlow-MinCost** sur le même petit graphe d'affectation (prise en compte de l'ordre des voeux)
-`./ftest exemples/graphe_3.txt src dest exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
+`./ftest.native exemples/graphe_3.txt 0 1 exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
 `dot -Tsvg exemples/graph_3.gv > exemples/graph_3.svg` 
 #### Test de **MaxFlow-MinCost** sur un plus grand graphe d'affectation
-`./ftest exemples/graphe_4.txt src dest exemples/graphe_4.gv --fromaffect --maxFminC --text` </br>
+`./ftest.native exemples/graphe_4.txt 0 1 exemples/graphe_4.gv --fromaffect --maxFminC --text` </br>
 `dot -Tsvg exemples/graph_4.gv > exemples/graph_4.svg` 
 ## Choix d'implémentation
 ### Implémentation du graphe
-#### arcs_out
+ 
+#### out_arcs et graph
 ```
-[ ( • id node destination, --α--> ) ;
-  ( • id node destination, --α--> ) ;
-  ( • id node destination, --α--> ) ;
-  ( • id node destination, --α--> ) ;
-  ( • id node destination, --α--> ) ;
-  ( • id node destination, --α--> ) ]
-  ```  
-#### graph
-```
-[ ( • id node source , [ ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ] ) ;
-  ( • id node source , [ ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ] ) ;
-  ( • id node source , [ ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ] ) ;
-  ( • id node source , [] ) ;                          
-  ( • id node source , [ ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ;
-                         ( • id node destination, --α--> ) ] ) ]
+type id = int
+
+type 'a out_arcs = (id * 'a) list
+
+type 'a graph = (id * 'a out_arcs) list
 ```
 #### labels utilisés --α-->
 ```
