@@ -113,9 +113,9 @@ let export_simplified path graph debut fin =
   (* Write in this file. *)
   fprintf ff "digraph finite_state_machine {\n rankdir=LR;\n  size=\"8,5\";\n" ;
   (* double circle src *)
-  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; _%d;\n" debut;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=blue]; %d;\n" debut;
   (* double circle dest *)
-  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; _%d;\n" fin ;
+  fprintf ff "node [shape = doublecircle, style=filled, fillcolor=red]; %d;\n" fin ;
   (* double circle src *)
   fprintf ff "node [shape = circle, style=filled, fillcolor=\"#dde0ea\", color=\"#737683\"];\n" ;
   e_iter graph (fun id1 id2 lbl -> if lbl.current>0 then fprintf ff "_%d -> _%d [ label = \"%s\"];\n" id1 id2 (string_of_label lbl) else fprintf ff "");

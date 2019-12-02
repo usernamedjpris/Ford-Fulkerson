@@ -1,0 +1,50 @@
+### Starting build.
+# Target: ftest.ml.depends, tags: { extension:ml, file:ftest.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules ftest.ml > ftest.ml.depends # cached
+# Target: ford.mli.depends, tags: { extension:mli, file:ford.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules ford.mli > ford.mli.depends # cached
+# Target: graph.mli.depends, tags: { extension:mli, file:graph.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules graph.mli > graph.mli.depends # cached
+# Target: graph.cmi, tags: { byte, compile, extension:mli, file:graph.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o graph.cmi graph.mli # cached
+# Target: tools.mli.depends, tags: { extension:mli, file:tools.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules tools.mli > tools.mli.depends # cached
+# Target: tools.cmi, tags: { byte, compile, extension:mli, file:tools.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o tools.cmi tools.mli # cached
+# Target: ford.cmi, tags: { byte, compile, extension:mli, file:ford.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o ford.cmi ford.mli # cached
+# Target: gfile.mli.depends, tags: { extension:mli, file:gfile.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules gfile.mli > gfile.mli.depends # cached
+# Target: gfile.cmi, tags: { byte, compile, extension:mli, file:gfile.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o gfile.cmi gfile.mli # cached
+# Target: min_cost.mli.depends, tags: { extension:mli, file:min_cost.mli, ocaml, ocamldep, quiet }
+ocamldep.opt -modules min_cost.mli > min_cost.mli.depends # cached
+# Target: min_cost.cmi, tags: { byte, compile, extension:mli, file:min_cost.mli, interf, ocaml, quiet }
+ocamlc.opt -c -o min_cost.cmi min_cost.mli # cached
+# Target: ftest.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ftest.cmo, file:ftest.ml, implem, ocaml, quiet }
+ocamlc.opt -c -o ftest.cmo ftest.ml # cached
+# Target: ford.ml.depends, tags: { extension:ml, file:ford.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules ford.ml > ford.ml.depends # cached
+# Target: graph.ml.depends, tags: { extension:ml, file:graph.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules graph.ml > graph.ml.depends # cached
+# Target: graph.cmx, tags: { compile, extension:cmx, extension:ml, file:graph.cmx, file:graph.ml, implem, native, ocaml, quiet }
+ocamlopt.opt -c -o graph.cmx graph.ml # cached
+# Target: tools.ml.depends, tags: { extension:ml, file:tools.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules tools.ml > tools.ml.depends # cached
+# Target: tools.cmx, tags: { compile, extension:cmx, extension:ml, file:tools.cmx, file:tools.ml, implem, native, ocaml, quiet }
+ocamlopt.opt -c -o tools.cmx tools.ml # cached
+# Target: ford.cmx, tags: { compile, extension:cmx, extension:ml, file:ford.cmx, file:ford.ml, implem, native, ocaml, quiet }
+ocamlopt.opt -c -o ford.cmx ford.ml # cached
+# Target: gfile.ml.depends, tags: { extension:ml, file:gfile.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules gfile.ml > gfile.ml.depends # cached
+# Target: gfile.cmx, tags: { compile, extension:cmx, extension:ml, file:gfile.cmx, file:gfile.ml, implem, native, ocaml, quiet }
+ocamlopt.opt -c -o gfile.cmx gfile.ml # cached
+# Target: min_cost.ml.depends, tags: { extension:ml, file:min_cost.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules min_cost.ml > min_cost.ml.depends
+# Target: min_cost.cmx, tags: { compile, extension:cmx, extension:ml, file:min_cost.cmx, file:min_cost.ml, implem, native, ocaml, quiet }
+ocamlopt.opt -c -o min_cost.cmx min_cost.ml
+# Target: ftest.cmx, tags: { compile, extension:cmx, extension:ml, file:ftest.cmx, file:ftest.ml, implem, native, ocaml, quiet }
+ocamlopt.opt -c -o ftest.cmx ftest.ml
+# Target: ftest.native, tags: { dont_link_with, extension:native, file:ftest.native, link, native, ocaml, program, quiet }
+ocamlopt.opt graph.cmx tools.cmx ford.cmx gfile.cmx min_cost.cmx ftest.cmx -o ftest.native
+# Compilation successful.

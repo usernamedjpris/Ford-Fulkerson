@@ -1,6 +1,8 @@
 open Gfile
 open Tools
 open Graph
+open Min_cost
+open Ford
 
 let () =
   if Array.length Sys.argv <> 8 then
@@ -82,3 +84,4 @@ let () =
             |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())  
         |_ -> let () = Printf.printf "_algo wrong %s\n%!" _algo in ())
       |_-> let () = Printf.printf "_import wrong %s\n%!" _import in ()
+    

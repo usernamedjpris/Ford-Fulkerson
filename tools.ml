@@ -35,4 +35,3 @@ let string_of_label l=
 
 
 let empty_parent={origin=(-1);arc={max=0;current=0;visited=false;cost=0}}
-
