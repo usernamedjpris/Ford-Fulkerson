@@ -1,0 +1,13 @@
+digraph finite_state_machine {
+ rankdir=LR;
+	size="8,5";
+node [shape = doublecircle, style=filled, fillcolor="#c7cde2", color="#bec4da"]; S;
+node [shape = doublecircle, style=filled, fillcolor="#c7cde2", color="#bec4da"]; P;
+node [shape = circle, style=filled, fillcolor="#dde0ea", color="#737683"];
+"Inj" -> P [ label = "[1/1](0)"];
+"Auto" -> P [ label = "[1/1](0)"];
+"RF" -> "Inj" [ label = "[1/1](1)"];
+S -> "RF" [ label = "[1/1](0)"];
+S -> "JG" [ label = "[1/1](0)"];
+"JG" -> "Auto" [ label = "[1/1](1)"];
+}

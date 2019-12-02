@@ -1,0 +1,16 @@
+digraph finite_state_machine {
+ rankdir=LR;
+	size="8,5";
+node [shape = doublecircle, style=filled, fillcolor=blue]; 0;
+node [shape = doublecircle, style=filled, fillcolor=red]; 1;
+node [shape = circle, style=filled, fillcolor="#dde0ea", color="#737683"];
+2 -> 3 [ label = "[100/100](0)"];
+3 -> 4 [ label = "[100/100](0)"];
+5 -> 6 [ label = "[100/100](0)"];
+5 -> 4 [ label = "[0/1](0)"];
+6 -> 7 [ label = "[100/100](0)"];
+7 -> 1 [ label = "[100/100](0)"];
+0 -> 2 [ label = "[100/100](0)"];
+0 -> 5 [ label = "[100/100](0)"];
+4 -> 1 [ label = "[100/100](0)"];
+}
