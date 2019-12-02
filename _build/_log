@@ -16,7 +16,7 @@ ocamldep.opt -modules gfile.mli > gfile.mli.depends # cached
 # Target: gfile.cmi, tags: { byte, compile, extension:mli, file:gfile.mli, interf, ocaml, quiet }
 ocamlc.opt -c -o gfile.cmi gfile.mli # cached
 # Target: min_cost.mli.depends, tags: { extension:mli, file:min_cost.mli, ocaml, ocamldep, quiet }
-ocamldep.opt -modules min_cost.mli > min_cost.mli.depends
+ocamldep.opt -modules min_cost.mli > min_cost.mli.depends # cached
 # Target: ford.cmi, tags: { byte, compile, extension:mli, file:ford.mli, interf, ocaml, quiet }
 ocamlc.opt -c -o ford.cmi ford.mli
 # Target: min_cost.cmi, tags: { byte, compile, extension:mli, file:min_cost.mli, interf, ocaml, quiet }

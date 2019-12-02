@@ -33,10 +33,6 @@ let rec get_current_cost liste id=
     |[]-> raise Not_found
     |(id1, cost, parent, marked)::r-> if id1 = id then cost else get_current_cost r id
 
-(*-lab current si flow initial != 0*)
-let make_ecart gr =
-  e_fold gr (fun gr id1 id2 lab -> new_arc (new_arc gr id1 id2 {lab with current = lab.max-lab.current}) id2 id1 lab) (clone_nodes gr);;
-
 
 (* si on veut de meilleures perfs => 
    1)remplacer la liste par un Array (mutable) => évite de faire des parcours de liste pour trouver chq element
