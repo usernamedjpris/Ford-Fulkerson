@@ -36,7 +36,7 @@ let rec find_path_ford gr id idfin accu =
 
 let rec print_path = function 
   | [] -> Printf.printf "\n%!"
-  | (id,(id2,lab))  :: lereste -> Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab)
+  | (id,(id2,lab)) :: lereste -> print_path lereste ; Printf.printf "%d->%d  %s\n%!" id id2 (string_of_label lab) 
 
 
 let rec max_flow res = function 
@@ -65,8 +65,6 @@ let update_graphe_initial gre gri =
                  | Some lab_inv -> new_arc gr src dest lab_inv) (clone_nodes gri)
 
 
-
-
 let ford_fulkerson2 gr debut fin =
   let gre = make_ecart gr in
   let rec loop gre d f =
@@ -78,7 +76,6 @@ let ford_fulkerson2 gr debut fin =
     loop gre debut fin
 
 
-
 let ford_fulkerson2_verbose gr debut fin =
   let gre = make_ecart gr in
   let rec loop gre d f =
@@ -86,7 +83,9 @@ let ford_fulkerson2_verbose gr debut fin =
     let () = print_path chemin in 
       match chemin with
         |[] -> update_graphe_initial gre gr
-        |_ -> loop (update_residu gre chemin (max_flow 9999 chemin)) d f
+        |_ -> let max_f = max_flow 9999 chemin in
+        let () = Printf.printf "max flow %d\n%!" max_f in
+        loop (update_residu gre chemin max_f) d f  
   in
     loop gre debut fin
 

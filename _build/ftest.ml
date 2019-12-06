@@ -1,9 +1,8 @@
 open Gfile
 open Tools
 open Graph
-open Min_cost
 open Ford
-
+open Min_cost
 let () =
   if Array.length Sys.argv <> 8 then
     begin
@@ -29,27 +28,27 @@ let () =
         match _export with
           | "--easygraph" -> let () = export_simplified outfile final_graph _source _sink in ()
           | "--visible" ->   let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
-          |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())    
+          |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible\n%!" _export in ())    
       | "--fordFverbose" -> (
           let final_graph = ford_fulkerson2_verbose gr _source _sink in
           match _export with
           | "--easygraph" -> let () = export_simplified outfile final_graph _source _sink in ()
           | "--visible" ->   let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
-          |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())
+          |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible\n%!" _export in ())
       |"--maxFminC" -> (
         let final_graph = max_flow_min_cost gr _source _sink in
             match _export with
             |"--easygraph" -> let () = export_simplified outfile final_graph _source _sink in ()
             |"--visible"  ->  let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
-            |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())
+            |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible\n%!" _export in ())
           
       |"--maxFminCverbose" -> (
         let final_graph = max_flow_min_cost_verbose gr _source _sink in
           match _export with
             |"--easygraph" -> let () = export_simplified outfile final_graph _source _sink in ()
             |"--visible" ->   let () = export_visible outfile (gmap final_graph string_of_label) _source _sink in ()
-            |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())
-      |_ -> let () = Printf.printf "_algo wrong %s\n%!" _algo in ())
+            |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible\n%!" _export in ())
+      |_ -> let () = Printf.printf "[algo] '%s' is wrong. It was expected an argument like :\n--fordF --fordFverbose --maxFminC --maxFminCverbose\n%!" _algo in ())
     | "--fromaffect" -> (
       let (gr, projets_etudiants) = import infile in 
       match _algo with
@@ -59,14 +58,14 @@ let () =
             | "--text" -> let () = export2_text outfile final_graph projets_etudiants in ()
             | "--easygraph" -> let () = export2_simplified outfile final_graph projets_etudiants in ()
             | "--visible" -> let () = export2_visible outfile final_graph projets_etudiants in ()
-            |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())            
+            |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible --text\n%!" _export in ())            
         |"--fordFverbose" -> (
           let final_graph = ford_fulkerson2_verbose gr 0 1 in
           match _export with
             | "--text" -> let () = export2_text outfile final_graph projets_etudiants in ()
             | "--easygraph" -> let () = export2_simplified outfile final_graph projets_etudiants in ()
             | "--visible" -> let () = export2_visible outfile final_graph projets_etudiants in ()
-            |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())  
+            |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible --text\n%!" _export in ())  
                 
         |"--maxFminC" -> (
           let final_graph = max_flow_min_cost gr 0 1 in
@@ -74,14 +73,14 @@ let () =
             | "--text" -> let () = export2_text outfile final_graph projets_etudiants in ()
             | "--easygraph" -> let () = export2_simplified outfile final_graph projets_etudiants in ()
             | "--visible" -> let () = export2_visible outfile final_graph projets_etudiants in ()
-            |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())  
+            |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible --text\n%!" _export in ())  
         |"--maxFminCverbose" -> (
           let final_graph = max_flow_min_cost_verbose gr 0 1 in
           match _export with
             | "--text" -> let () = export2_text outfile final_graph projets_etudiants in ()
             | "--easygraph" -> let () = export2_simplified outfile final_graph projets_etudiants in ()
             | "--visible" -> let () = export2_visible outfile final_graph projets_etudiants in ()
-            |_ -> let () = Printf.printf "export wrong %s\n%!" _export in ())  
-        |_ -> let () = Printf.printf "_algo wrong %s\n%!" _algo in ())
-      |_-> let () = Printf.printf "_import wrong %s\n%!" _import in ()
+            |_ -> let () = Printf.printf "[export] '%s' is wrong. It was expected an argument like :\n--easygraph --visible --text\n%!" _export in ())  
+        |_ -> let () = Printf.printf "algo '%s' is wrong. It was expected an argument like :\n--fordF --fordFverbose --maxFminC --maxFminCverbose\n%!" _algo in ())
+      |_-> let () = Printf.printf "[import] '%s' is wrong. It was expected an argument like :\n--fromaffect --fromGfile\n%!" _import in ()
     
