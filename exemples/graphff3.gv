@@ -1,0 +1,22 @@
+digraph finite_state_machine {
+ rankdir=LR;
+	size="8,5";
+node [shape = doublecircle, style=filled, fillcolor="#c7cde2", color="#bec4da"]; S;
+node [shape = doublecircle, style=filled, fillcolor="#c7cde2", color="#bec4da"]; P;
+node [shape = circle, style=filled, fillcolor="#dde0ea", color="#737683"];
+"Inj" -> P [ label = "[3/3](0)"];
+"Auto" -> P [ label = "[2/2](0)"];
+"Secu" -> P [ label = "[1/1](0)"];
+"EL" -> "Auto" [ label = "[1/1](0)"];
+"RF" -> "Auto" [ label = "[1/1](0)"];
+"DL" -> "Inj" [ label = "[1/1](1)"];
+"ER" -> "Inj" [ label = "[1/1](1)"];
+"JG" -> "Inj" [ label = "[1/1](0)"];
+S -> "EL" [ label = "[1/1](0)"];
+S -> "RF" [ label = "[1/1](0)"];
+S -> "DL" [ label = "[1/1](0)"];
+S -> "ER" [ label = "[1/1](0)"];
+S -> "JG" [ label = "[1/1](0)"];
+S -> "AB" [ label = "[1/1](0)"];
+"AB" -> "Secu" [ label = "[1/1](1)"];
+}
