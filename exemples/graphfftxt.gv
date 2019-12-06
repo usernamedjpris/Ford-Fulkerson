@@ -1,9 +1,0 @@
-  digraph html {
-abc [shape=none, margin=0, label=<
-        <TABLE  CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
-            <TR BGCOLOR="#1B1F24" >
-                    <TD BORDER="1px solid #d4d4d4"><FONT COLOR="#9EA2A8">Student</FONT></TD>
-                    <TD BORDER="1px solid #d4d4d4"><FONT COLOR="#9EA2A8">Project</FONT></TD>
-            </TR><TR BGCOLOR="#EBEBEB"><TD BORDER="1px solid #d4d4d4"><FONT COLOR="#75778A">"RF"</FONT></TD><TD BORDER="1px solid #d4d4d4"><FONT COLOR="#75778A"> "Inj" </FONT></TD></TR>
-<TR BGCOLOR="#EBEBEB"><TD BORDER="1px solid #d4d4d4"><FONT COLOR="#75778A">"JG"</FONT></TD><TD BORDER="1px solid #d4d4d4"><FONT COLOR="#75778A"> "Auto" </FONT></TD></TR>
-</TABLE>>]}
