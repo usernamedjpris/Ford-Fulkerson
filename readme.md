@@ -2,16 +2,15 @@
 
 ## Guide d'utilisation sous Linux
 ### Commandes générales
+#### Prérequis 
+[**Opam**](https://github.com/ocaml/opam/releases) et [**Ocamlbuild**](https://github.com/ocaml/ocamlbuild) installés
 #### Compilation
-``` 
-rm -f *.cmi *.cmo ftest    
-``` 
 ``` 
 ocamlbuild ftest.native   
 ``` 
 #### Exécution
 ``` 
-./ftest graphIN [src] [dest] graphOUT.gv [option_import] [option_algo] [option_export]     
+./ftest.native graphIN [src] [dest] graphOUT.gv [option_import] [option_algo] [option_export]     
 ``` 
 #####     [src] [dest] :
 entiers.  <i>  Non pris en compte pour option_import = fromaffect</i>
@@ -55,14 +54,14 @@ dot -Tsvg graph.gv > graph.svg
 `./ftest.native exemples/graphe_1 0 1 exemples/graphe1.gv --fromGfile --fordFverbose --visible` </br>
 `dot -Tsvg exemples/graph_1.gv > exemples/graph1.svg` 
 #### Test de **Ford-Fulkerson** sur un petit graphe d'affectation 
-`./ftest.native exemples/graphe_2.txt 0 1 exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
-`dot -Tsvg exemples/graph_2.gv > exemples/graph_2.svg` 
+`./ftest.native exemples/graphe_2 0 1 exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
+`dot -Tsvg exemples/graph_2.gv > exemples/graph_2fF.svg` 
 #### Test de **MaxFlow-MinCost** sur le même petit graphe d'affectation (prise en compte de l'ordre des voeux)
-`./ftest.native exemples/graphe_3.txt 0 1 exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
-`dot -Tsvg exemples/graph_3.gv > exemples/graph_3.svg` 
+`./ftest.native exemples/graphe_2 0 1 exemples/graphe_2.gv --fromaffect --maxFminC --easygraph` </br>
+`dot -Tsvg exemples/graph_2.gv > exemples/graph_2mFmC.svg` 
 #### Test de **MaxFlow-MinCost** sur un plus grand graphe d'affectation
-`./ftest.native exemples/graphe_4.txt 0 1 exemples/graphe_4.gv --fromaffect --maxFminC --text` </br>
-`dot -Tsvg exemples/graph_4.gv > exemples/graph_4.svg` 
+`./ftest.native exemples/graphe_3 0 1 exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
+`dot -Tsvg exemples/graph_3.gv > exemples/graph_3.svg` 
 ## Choix d'implémentation
 ### Implémentation du graphe
  
@@ -81,13 +80,13 @@ type labels = { max: int;           // capacité de l'arc
                 visited: bool;      // marquage des arcs visités pour la recherche de chemin 
                 cost: int }         // coût de l'arc pour l'algorithme de MaxFlow-MinCost                     
 ```
-## Le problème de l'affectation des étudiants à un projet tutoré au nombre de places limité  
+## Le problème de l'affectation des étudiants à des projets tutorés aux nombres de places limités  
 ### Contexte
 Des sujets de projets tutorés sont proposés à des étudiants.</br>
 Les étudiants doivent émettre deux vœux d'affectation.</br>
 Pour chaque projet un nombre de places disponibles est attribué.
 ### Modélisation pour une application d'un algorithme de flot
-![What is this](model.PNG)
+![modélisation](model.PNG)
 Les E<sub>i</sub> représentent les étudiants.</br>
 Les P<sub>j</sub> représentent les projets proposés.</br>
 Les nœuds source S et puits P sont rajoutés de telle sorte que le flot de S à P fait sens au regard du problème soumis :</br>
@@ -104,5 +103,5 @@ L'émission d'un vœu d'un étudiant aux initiales `TB` pour les projets `projet
 ```
 e TB projet1 projet2
 ```
-voir un [exemple](exemples/graph_2.txt)
+voir un [exemple](exemples/graph_3)
 
