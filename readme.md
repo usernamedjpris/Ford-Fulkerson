@@ -51,17 +51,17 @@ dot -Tsvg graph.gv > graph.svg
 
 ### Exemples 
 #### Test de **Ford-Fulkerson** avec chemin empruntant un arc retour du graphe d'écart
-`./ftest.native exemples/graphe_1 0 1 exemples/graph_1 --fromGfile --fordFverbose --visible` </br>
-`dot -Tsvg exemples/graph_1 > exemples/graph1.svg` 
+`./ftest.native exemples/graph_1 0 1 exemples/graphe_1.gv --fromGfile --fordFverbose --visible` </br>
+`dot -Tsvg exemples/graphe_1.gv > exemples/graph1.svg` 
 #### Test de **Ford-Fulkerson** sur un petit graphe d'affectation 
-`./ftest.native exemples/graphe_2 0 1 exemples/graph_2 --fromaffect --fordF --easygraph` </br>
-`dot -Tsvg exemples/graph_2 > exemples/graph_2fF.svg` 
+`./ftest.native exemples/graph_2 0 1 exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
+`dot -Tsvg exemples/graphe_2.gv > exemples/graph_2fF.svg` 
 #### Test de **MaxFlow-MinCost** sur le même petit graphe d'affectation (prise en compte de l'ordre des voeux)
-`./ftest.native exemples/graphe_2 0 1 exemples/graph_2 --fromaffect --maxFminC --easygraph` </br>
-`dot -Tsvg exemples/graph_2 > exemples/graph_2mFmC.svg` 
+`./ftest.native exemples/graph_2 0 1 exemples/graphe_2.gv --fromaffect --maxFminC --easygraph` </br>
+`dot -Tsvg exemples/graph_2.gv > exemples/graph_2mFmC.svg` 
 #### Test de **MaxFlow-MinCost** sur un plus grand graphe d'affectation
-`./ftest.native exemples/graphe_3 0 1 exemples/graph_3 --fromaffect --maxFminC --text` </br>
-`dot -Tsvg exemples/graph_3 > exemples/graph_3.svg` 
+`./ftest.native exemples/graph_3 0 1 exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
+`dot -Tsvg exemples/graphe_3.gv > exemples/graph_3.svg` 
 ## Choix d'implémentation
 ### Implémentation du graphe
  
