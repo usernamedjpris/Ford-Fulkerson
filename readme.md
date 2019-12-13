@@ -51,17 +51,17 @@ dot -Tsvg graph.gv > graph.svg
 
 ### Exemples 
 #### Test de **Ford-Fulkerson** avec chemin empruntant un arc retour du graphe d'écart
-`./ftest.native exemples/graphe_1 0 1 exemples/graphe1.gv --fromGfile --fordFverbose --visible` </br>
-`dot -Tsvg exemples/graph_1.gv > exemples/graph1.svg` 
+`./ftest.native exemples/graphe_1 0 1 exemples/graph_1 --fromGfile --fordFverbose --visible` </br>
+`dot -Tsvg exemples/graph_1 > exemples/graph1.svg` 
 #### Test de **Ford-Fulkerson** sur un petit graphe d'affectation 
-`./ftest.native exemples/graphe_2 0 1 exemples/graphe_2.gv --fromaffect --fordF --easygraph` </br>
-`dot -Tsvg exemples/graph_2.gv > exemples/graph_2fF.svg` 
+`./ftest.native exemples/graphe_2 0 1 exemples/graph_2 --fromaffect --fordF --easygraph` </br>
+`dot -Tsvg exemples/graph_2 > exemples/graph_2fF.svg` 
 #### Test de **MaxFlow-MinCost** sur le même petit graphe d'affectation (prise en compte de l'ordre des voeux)
-`./ftest.native exemples/graphe_2 0 1 exemples/graphe_2.gv --fromaffect --maxFminC --easygraph` </br>
-`dot -Tsvg exemples/graph_2.gv > exemples/graph_2mFmC.svg` 
+`./ftest.native exemples/graphe_2 0 1 exemples/graph_2 --fromaffect --maxFminC --easygraph` </br>
+`dot -Tsvg exemples/graph_2 > exemples/graph_2mFmC.svg` 
 #### Test de **MaxFlow-MinCost** sur un plus grand graphe d'affectation
-`./ftest.native exemples/graphe_3 0 1 exemples/graphe_3.gv --fromaffect --maxFminC --text` </br>
-`dot -Tsvg exemples/graph_3.gv > exemples/graph_3.svg` 
+`./ftest.native exemples/graphe_3 0 1 exemples/graph_3 --fromaffect --maxFminC --text` </br>
+`dot -Tsvg exemples/graph_3 > exemples/graph_3.svg` 
 ## Choix d'implémentation
 ### Implémentation du graphe
  
@@ -90,7 +90,7 @@ Pour chaque projet un nombre de places disponibles est attribué.
 Les E<sub>i</sub> représentent les étudiants.</br>
 Les P<sub>j</sub> représentent les projets proposés.</br>
 Les nœuds source S et puits P sont rajoutés de telle sorte que le flot de S à P fait sens au regard du problème soumis :</br>
-  • les capacités des arcs S → E<sub>i</sub> représentent le nombre d'étudiant de type E<sub>i</sub> (dans nos exemples toujours 1)</br>
+  • les capacités des arcs S → E<sub>i</sub> représentent le nombre d'étudiant de type E<sub>i</sub> (dans nos exemples toujours 1, chaque étudiant est unique)</br>
   • les capacités des arcs E<sub>i</sub> → P<sub>j</sub> représentent les voeux des étudiants (1 : projet choisi ; 0 : projet non choisi)</br>
   • les capacités des arcs P<sub>j</sub> → P représentent le nombre de places disponibles</br>
   • un flot de 1 sur un chemin S → E<sub>i</sub> → P<sub>j</sub> → P signifie que E<sub>i</sub> a été affecté au projet P<sub>j</sub>
@@ -99,7 +99,7 @@ La soumission du projet `nomcomplet` raccourcis à `ptitnom` (unique) au nombre 
 ```
 p ptitnom nbPlaceDispo nomcomplet
 ```
-L'émission d'un vœu d'un étudiant aux initiales `TB` pour les projets `projet1` et `projet2` se fait de la manière suivante :
+L'émission d'un vœu d'un étudiant aux initiales `TB` pour les projets `projet1` (voeu 1) et `projet2` (voeu 2) se fait de la manière suivante :
 ```
 e TB projet1 projet2
 ```
